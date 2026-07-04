@@ -1,0 +1,80 @@
+.result-empty {
+  padding: 32px 20px;
+  text-align: center;
+  color: var(--muted);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.result-view {
+  display: flex;
+  flex-direction: column;
+}
+
+.summary-card {
+  padding: 20px;
+}
+
+.urgency-badge {
+  font-size: 12px;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: 99px;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+.summary-card.urgency-high .urgency-badge {
+  background: rgba(248, 113, 113, 0.15);
+  color: var(--red);
+}
+
+.summary-card.urgency-medium .urgency-badge {
+  background: rgba(251, 191, 36, 0.15);
+  color: var(--amber);
+}
+
+.summary-card.urgency-low .urgency-badge {
+  background: rgba(52, 211, 153, 0.15);
+  color: var(--green);
+}
+
+.summary-text {
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  max-width: var(--measure);
+}
+
+.action-flag {
+  margin-top: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.actions-card {
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+}
+
+.action-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  cursor: pointer;
+}
+
+.action-item input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--blue);
+}
+
+.result-cta {
+  margin-top: 24px;
+}

@@ -1,0 +1,77 @@
+.empty-note {
+  padding: 20px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 13.5px;
+}
+
+.event-form {
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.event-form select {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid var(--card-border);
+  background: var(--card);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.event-form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.event-form-actions .scan-btn {
+  flex: 1;
+}
+
+.calendar-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.calendar-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+}
+
+.calendar-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.calendar-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.calendar-info h4 {
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.calendar-info p {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.calendar-source {
+  font-size: 11px;
+  color: var(--muted);
+  flex-shrink: 0;
+  background: var(--card-border);
+  padding: 4px 8px;
+  border-radius: 99px;
+}

@@ -1,0 +1,105 @@
+.reply-form {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.intent-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.intent-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 16px 10px;
+  border-radius: 18px;
+  border: 1px solid var(--card-border);
+  background: var(--card);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.intent-chip:active {
+  transform: scale(0.97);
+}
+
+.intent-chip.selected {
+  border-color: var(--blue);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.18), rgba(139, 92, 246, 0.18));
+}
+
+.intent-icon {
+  font-size: 24px;
+}
+
+.field {
+  margin-bottom: 14px;
+}
+
+.field label {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.field input,
+.field textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid var(--card-border);
+  background: var(--card);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  resize: vertical;
+}
+
+.field input:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: var(--blue);
+}
+
+.reply-generate-btn {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.reply-result {
+  display: flex;
+  flex-direction: column;
+}
+
+.letter-card {
+  padding: 18px;
+}
+
+.letter-text {
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  max-width: var(--measure);
+  white-space: pre-wrap;
+}
+
+.letter-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.letter-actions .scan-btn {
+  flex: 1;
+  padding: 12px;
+  font-size: 13.5px;
+}

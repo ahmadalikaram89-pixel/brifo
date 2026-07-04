@@ -1,0 +1,100 @@
+.child-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px;
+  margin-bottom: 6px;
+}
+
+.child-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+  font-weight: 900;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.child-header h2 {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.child-header p {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.empty-note {
+  padding: 20px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 13.5px;
+}
+
+.payments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.payment-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px;
+}
+
+.payment-info h4 {
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.payment-info p {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.payment-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.payment-amount {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--amber);
+}
+
+.paid-list {
+  margin-top: 8px;
+}
+
+.paid-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 4px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.paid-tag {
+  color: var(--green);
+  font-weight: 700;
+}
+
+.delete-btn {
+  width: 100%;
+  margin-top: 28px;
+  color: var(--red);
+  border-color: rgba(248, 113, 113, 0.3);
+}
