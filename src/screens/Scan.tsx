@@ -134,7 +134,11 @@ export function Scan() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ image: base64, mediaType }),
       });
-      if (!response.ok) throw new Error('request failed');
+      if (!response.ok) {
+        const body = await response.text().catch(() => '');
+        console.error(`[Scan] /api/analyze failed: ${response.status} ${response.statusText}`, body);
+        throw new Error('request failed');
+      }
       const result: LetterAnalysis = await response.json();
       setPendingResult(result);
 
@@ -150,7 +154,8 @@ export function Scan() {
         }
       }
       setState('assign');
-    } catch {
+    } catch (err) {
+      console.error('[Scan] confirmAndAnalyze failed:', err);
       setErrorMessage(t('scan_error'));
       setState('error');
     }

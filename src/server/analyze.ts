@@ -2,7 +2,27 @@ import Anthropic from '@anthropic-ai/sdk';
 import { zodOutputFormat } from '@anthropic-ai/sdk/helpers/zod';
 import { z } from 'zod';
 
-const client = new Anthropic();
+/** Thrown for server misconfiguration (e.g. missing API key), as opposed to
+ * AnalyzeError which signals bad/invalid request input. Kept distinct so the
+ * API route can tell "key missing" apart from "model/network failure" instead
+ * of collapsing everything into one generic 500. */
+export class ConfigError extends Error {}
+
+let client: Anthropic | null = null;
+
+/** Constructing `new Anthropic()` eagerly at module load would throw before
+ * the request handler's try/catch ever runs (uncaught at cold start), which
+ * is what produced the generic, unhelpful failure in production. Constructing
+ * it lazily, behind an explicit env var check, turns a missing key into a
+ * normal catchable error instead of a crashed function invocation. */
+function getClient(): Anthropic {
+  if (client) return client;
+  if (!process.env.ANTHROPIC_API_KEY) {
+    throw new ConfigError('ANTHROPIC_API_KEY is not set in the server environment');
+  }
+  client = new Anthropic();
+  return client;
+}
 
 const SYSTEM_PROMPT =
   'You are a helpful assistant for Arabic-speaking parents in Austria. ' +
@@ -49,23 +69,34 @@ export async function analyzeLetterImage(imageBase64: string, mediaType: string)
     throw new AnalyzeError('unsupported media type');
   }
 
-  const response = await client.messages.parse({
-    model: 'claude-opus-4-8',
-    max_tokens: 2048,
-    system: SYSTEM_PROMPT,
-    messages: [
-      {
-        role: 'user',
-        content: [
-          { type: 'image', source: { type: 'base64', media_type: mediaType, data: imageBase64 } },
-          { type: 'text', text: 'حلّل رسالة المدرسة هاي واطلع لي النتيجة بالصيغة المطلوبة.' },
-        ],
-      },
-    ],
-    output_config: { format: zodOutputFormat(AnalysisSchema) },
-  });
+  const anthropic = getClient();
+  const approxBytes = Math.round((imageBase64.length * 3) / 4);
+  console.log(`[analyze] request received: mediaType=${mediaType} approxImageBytes=${approxBytes}`);
+
+  let response;
+  try {
+    response = await anthropic.messages.parse({
+      model: 'claude-opus-4-8',
+      max_tokens: 2048,
+      system: SYSTEM_PROMPT,
+      messages: [
+        {
+          role: 'user',
+          content: [
+            { type: 'image', source: { type: 'base64', media_type: mediaType, data: imageBase64 } },
+            { type: 'text', text: 'حلّل رسالة المدرسة هاي واطلع لي النتيجة بالصيغة المطلوبة.' },
+          ],
+        },
+      ],
+      output_config: { format: zodOutputFormat(AnalysisSchema) },
+    });
+  } catch (err) {
+    console.error('[analyze] Anthropic API call failed:', err);
+    throw err;
+  }
 
   if (!response.parsed_output) {
+    console.error('[analyze] model returned no parsed_output', response);
     throw new AnalyzeError('model did not return structured output');
   }
 

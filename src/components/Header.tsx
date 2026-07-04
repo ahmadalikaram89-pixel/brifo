@@ -7,7 +7,7 @@ export function Header() {
     <header className="brifo-header">
       <div className="brand">
         <div className="logo">📬</div>
-        <div className="brand-name">
+        <div className="brand-name" dir="ltr">
           Bri<span>fo</span>
         </div>
       </div>

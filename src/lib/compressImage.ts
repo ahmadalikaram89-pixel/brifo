@@ -19,12 +19,16 @@ export async function compressImage(source: Blob): Promise<CompressedImage> {
   if (!ctx) throw new Error('canvas 2d context unavailable');
   ctx.drawImage(bitmap, 0, 0, width, height);
 
-  let quality = 0.9;
+  let quality = 0.8;
   let blob = await canvasToBlob(canvas, quality);
   while (blob.size > MAX_BYTES && quality > 0.35) {
     quality -= 0.1;
     blob = await canvasToBlob(canvas, quality);
   }
+
+  console.log(
+    `[compressImage] ${source.size} bytes -> ${blob.size} bytes (${width}x${height}, quality ${quality.toFixed(2)})`,
+  );
 
   return { base64: await blobToBase64(blob), mediaType: 'image/jpeg' };
 }

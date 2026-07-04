@@ -1,8 +1,20 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { zodOutputFormat } from '@anthropic-ai/sdk/helpers/zod';
 import { z } from 'zod';
+import { ConfigError } from './analyze.js';
 
-const client = new Anthropic();
+let client: Anthropic | null = null;
+
+/** See analyze.ts getClient() — lazy construction turns a missing key into a
+ * normal catchable error instead of an uncaught throw at module load. */
+function getClient(): Anthropic {
+  if (client) return client;
+  if (!process.env.ANTHROPIC_API_KEY) {
+    throw new ConfigError('ANTHROPIC_API_KEY is not set in the server environment');
+  }
+  client = new Anthropic();
+  return client;
+}
 
 const SYSTEM_PROMPT =
   'You are a formal German letter-writing assistant helping Arabic-speaking parents in Austria ' +
@@ -49,14 +61,24 @@ export async function generateReplyLetter(input: unknown): Promise<ReplyLetter> 
     `Details from parent (may be in Arabic): ${details}`,
   ].filter(Boolean);
 
-  const response = await client.messages.parse({
-    model: 'claude-opus-4-8',
-    max_tokens: 2048,
-    system: SYSTEM_PROMPT,
-    messages: [{ role: 'user', content: contextLines.join('\n') }],
-    output_config: { format: zodOutputFormat(ReplyResultSchema) },
-  });
+  const anthropic = getClient();
+  let response;
+  try {
+    response = await anthropic.messages.parse({
+      model: 'claude-opus-4-8',
+      max_tokens: 2048,
+      system: SYSTEM_PROMPT,
+      messages: [{ role: 'user', content: contextLines.join('\n') }],
+      output_config: { format: zodOutputFormat(ReplyResultSchema) },
+    });
+  } catch (err) {
+    console.error('[reply] Anthropic API call failed:', err);
+    throw err;
+  }
 
-  if (!response.parsed_output) throw new ReplyError('model did not return structured output');
+  if (!response.parsed_output) {
+    console.error('[reply] model returned no parsed_output', response);
+    throw new ReplyError('model did not return structured output');
+  }
   return response.parsed_output;
 }

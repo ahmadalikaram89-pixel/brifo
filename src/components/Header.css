@@ -26,6 +26,11 @@
   font-weight: 900;
   font-size: 22px;
   letter-spacing: 0.3px;
+  /* The brand mark is always Latin ("Brifo"), split into two <span>s for the
+     gradient effect. Without isolating it as one atomic LTR unit, the bidi
+     algorithm reorders the two sibling text runs in RTL mode ("foBri"). */
+  unicode-bidi: isolate;
+  display: inline-block;
 }
 
 .brand-name span {

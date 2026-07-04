@@ -1,5 +1,6 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { generateReplyLetter, ReplyError } from '../src/server/reply';
+import { ConfigError } from '../src/server/analyze';
 
 interface VercelRequest extends IncomingMessage {
   body?: unknown;
@@ -20,11 +21,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const result = await generateReplyLetter(req.body);
     res.status(200).json(result);
   } catch (err) {
+    if (err instanceof ConfigError) {
+      console.error('[api/reply] config error:', err.message);
+      res.status(500).json({ error: `server misconfigured: ${err.message}` });
+      return;
+    }
     if (err instanceof ReplyError) {
       res.status(400).json({ error: err.message });
       return;
     }
-    console.error('reply generation failed', err);
-    res.status(500).json({ error: 'reply generation failed' });
+    console.error('[api/reply] reply generation failed:', err);
+    const detail = err instanceof Error ? err.message : String(err);
+    res.status(500).json({ error: 'reply generation failed', detail });
   }
 }
