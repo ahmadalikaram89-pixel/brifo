@@ -7,6 +7,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';
 import { ALL_CHILDREN } from '../types/data';
 import { isolateBidiRuns } from '../lib/bidiText';
+import { colorsForChildId, dotBackground } from '../lib/childColors';
 import './Calendar.css';
 
 const SOURCE_LABEL_KEY = {
@@ -96,7 +97,7 @@ export function Calendar() {
             const child = childFor(e.childId);
             return (
               <div className="card calendar-row" key={e.id}>
-                <span className="calendar-dot" style={{ background: child?.color ?? 'var(--muted)' }} />
+                <span className="calendar-dot" style={{ background: dotBackground(colorsForChildId(e.childId, children)) }} />
                 <div className="calendar-info">
                   <h4>{isolateBidiRuns(e.title)}</h4>
                   <p>

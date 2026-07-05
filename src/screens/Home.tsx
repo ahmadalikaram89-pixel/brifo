@@ -6,12 +6,13 @@ import { AddToCalendarButton } from '../components/AddToCalendarButton';
 import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';
 import { isolateBidiRuns } from '../lib/bidiText';
+import { colorsForChildId, dotBackground } from '../lib/childColors';
 import './Home.css';
 
 export function Home() {
   const navigate = useNavigate();
   const { t } = useLanguage();
-  const { children, letters, payments, events } = useData();
+  const { children, letters, payments, events, eventsForChild } = useData();
 
   const today = new Date().toISOString().slice(0, 10);
   const monthPrefix = today.slice(0, 7);
@@ -40,7 +41,7 @@ export function Home() {
   }
 
   function upcomingCountFor(childId: string) {
-    return events.filter((e) => e.childId === childId && e.date >= today).length;
+    return eventsForChild(childId).filter((e) => e.date >= today).length;
   }
 
   function avatarGradient(color: string) {
@@ -120,7 +121,7 @@ export function Home() {
                   </div>
                   <h4>{isolateBidiRuns(e.title)}</h4>
                   <p>
-                    {child && <span className="child-dot" style={{ background: child.color }} />}
+                    <span className="child-dot" style={{ background: dotBackground(colorsForChildId(e.childId, children)) }} />
                     {isolateBidiRuns(child ? `${child.name} · ${child.schoolClass}` : t('assign_all_children'))}
                   </p>
                 </div>

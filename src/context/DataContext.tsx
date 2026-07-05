@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
-import { CHILD_COLORS, type Child, type CalendarEvent, type Payment, type StoredLetter } from '../types/data';
+import { ALL_CHILDREN, CHILD_COLORS, type Child, type CalendarEvent, type Payment, type StoredLetter } from '../types/data';
 import type { LetterAnalysis } from '../types/analysis';
 
 const STORAGE_KEY = 'brifo_data';
@@ -182,9 +182,15 @@ export function DataProvider({ children: reactChildren }: { children: ReactNode 
     return event;
   }
 
-  const lettersForChild = (childId: string) => state.letters.filter((l) => l.childId === childId);
-  const paymentsForChild = (childId: string) => state.payments.filter((p) => p.childId === childId);
-  const eventsForChild = (childId: string) => state.events.filter((e) => e.childId === childId);
+  // An "الكل" (all-children) item is stored once with childId === ALL_CHILDREN
+  // rather than duplicated per child, so every per-child lookup must also
+  // pull in those shared records instead of matching only the exact id.
+  const lettersForChild = (childId: string) =>
+    state.letters.filter((l) => l.childId === childId || l.childId === ALL_CHILDREN);
+  const paymentsForChild = (childId: string) =>
+    state.payments.filter((p) => p.childId === childId || p.childId === ALL_CHILDREN);
+  const eventsForChild = (childId: string) =>
+    state.events.filter((e) => e.childId === childId || e.childId === ALL_CHILDREN);
 
   return (
     <DataContext.Provider
