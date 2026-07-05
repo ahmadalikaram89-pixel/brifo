@@ -1,12 +1,13 @@
 import { NavLink } from 'react-router-dom';
+import { Home, CalendarDays, BookOpen, Settings } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import './BottomNav.css';
 
 const items = [
-  { to: '/', emoji: '🏠', key: 'nav_home' as const },
-  { to: '/calendar', emoji: '📅', key: 'nav_calendar' as const },
-  { to: '/guide', emoji: '📚', key: 'nav_guide' as const },
-  { to: '/settings', emoji: '⚙️', key: 'nav_settings' as const },
+  { to: '/', Icon: Home, key: 'nav_home' as const },
+  { to: '/calendar', Icon: CalendarDays, key: 'nav_calendar' as const },
+  { to: '/guide', Icon: BookOpen, key: 'nav_guide' as const },
+  { to: '/settings', Icon: Settings, key: 'nav_settings' as const },
 ];
 
 export function BottomNav() {
@@ -15,15 +16,10 @@ export function BottomNav() {
   return (
     <nav className="brifo-nav">
       <div className="nav-in">
-        {items.map((item) => (
-          <NavLink
-            key={item.to}
-            to={item.to}
-            end={item.to === '/'}
-            className={({ isActive }) => `ni${isActive ? ' on' : ''}`}
-          >
-            <span className="e">{item.emoji}</span>
-            {t(item.key)}
+        {items.map(({ to, Icon, key }) => (
+          <NavLink key={to} to={to} end={to === '/'} className={({ isActive }) => `ni${isActive ? ' on' : ''}`}>
+            <Icon className="e" size={23} strokeWidth={2.25} />
+            {t(key)}
           </NavLink>
         ))}
       </div>

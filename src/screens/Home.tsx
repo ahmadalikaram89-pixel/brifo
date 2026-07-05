@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { Camera, Baby, PenLine, CheckCircle2, BookOpen } from 'lucide-react';
 import { Header } from '../components/Header';
 import { TabLayout } from '../components/TabLayout';
 import { useLanguage } from '../context/LanguageContext';
@@ -47,26 +48,34 @@ export function Home() {
       </div>
 
       <div className="scan" onClick={() => navigate('/scan')}>
-        <div className="cam">📸</div>
+        <div className="cam">
+          <Camera size={30} strokeWidth={2} />
+        </div>
         <h2>{t('scan_title')}</h2>
         <p>{t('scan_subtitle')}</p>
       </div>
 
       <div className="sec">
         <h3>{t('home_children_title')}</h3>
-        <a onClick={() => navigate('/child/new')}>{t('home_add_child')}</a>
+        {children.length > 0 && <a onClick={() => navigate('/child/new')}>{t('home_add_child')}</a>}
       </div>
       {children.length === 0 ? (
-        <div className="card empty-note">{t('home_no_children')}</div>
+        <div className="empty-state actionable" onClick={() => navigate('/child/new')}>
+          <div className="empty-state-icon">
+            <Baby size={26} strokeWidth={2} />
+          </div>
+          <h4>{t('home_no_children_title')}</h4>
+          <p>{t('home_no_children_subtitle')}</p>
+        </div>
       ) : (
-        <div className="children-grid">
+        <div className="children-row">
           {children.map((c) => (
             <div className="child-card" key={c.id} onClick={() => navigate(`/child/${c.id}`)}>
               <div className="child-card-avatar" style={{ background: c.color }}>
                 {c.name.slice(0, 1)}
               </div>
-              <h4>{c.name}</h4>
-              <p>{c.schoolClass}</p>
+              <h4>{isolateBidiRuns(c.name)}</h4>
+              <p>{isolateBidiRuns(c.schoolClass)}</p>
             </div>
           ))}
         </div>
@@ -108,7 +117,7 @@ export function Home() {
           {recentLetters.map((l) => (
             <div className="letter" key={l.id} onClick={() => navigate('/result', { state: { result: l.analysis } })}>
               <div className={`ic ${l.analysis.action_required ? 'todo' : 'done'}`}>
-                {l.analysis.action_required ? '✍️' : '✅'}
+                {l.analysis.action_required ? <PenLine size={19} strokeWidth={2.25} /> : <CheckCircle2 size={19} strokeWidth={2.25} />}
               </div>
               <div className="tx">
                 <h4>{isolateBidiRuns(l.analysis.summary)}</h4>
@@ -127,12 +136,16 @@ export function Home() {
       </div>
       <div className="quick">
         <div className="qa" onClick={() => navigate('/reply')}>
-          <div className="e">✍️</div>
+          <div className="e">
+            <PenLine size={24} strokeWidth={2} />
+          </div>
           <h4>{t('quick_reply_title')}</h4>
           <p>{t('quick_reply_subtitle')}</p>
         </div>
         <div className="qa" onClick={() => navigate('/guide')}>
-          <div className="e">📚</div>
+          <div className="e">
+            <BookOpen size={24} strokeWidth={2} />
+          </div>
           <h4>{t('quick_guide_title')}</h4>
           <p>{t('quick_guide_subtitle')}</p>
         </div>

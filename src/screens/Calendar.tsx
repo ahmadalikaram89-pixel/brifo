@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { CalendarX2 } from 'lucide-react';
 import { TabLayout } from '../components/TabLayout';
 import { Header } from '../components/Header';
 import { useLanguage } from '../context/LanguageContext';
@@ -82,7 +83,12 @@ export function Calendar() {
       )}
 
       {upcoming.length === 0 ? (
-        <div className="card empty-note">{t('calendar_no_events')}</div>
+        <div className="empty-state actionable" onClick={() => setShowForm(true)}>
+          <div className="empty-state-icon">
+            <CalendarX2 size={26} strokeWidth={2} />
+          </div>
+          <p>{t('calendar_no_events')}</p>
+        </div>
       ) : (
         <div className="calendar-list">
           {upcoming.map((e) => {

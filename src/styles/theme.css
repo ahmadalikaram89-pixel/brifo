@@ -6,7 +6,7 @@
   --blue: #3b82f6;
   --purple: #8b5cf6;
   --text: #f2f3ff;
-  --muted: #9a9dc3;
+  --muted: #b8bcdc;
   --green: #34d399;
   --amber: #fbbf24;
   --red: #f87171;
@@ -46,9 +46,19 @@ body {
 body {
   font-family: var(--font-arabic);
   font-size: var(--text-body);
+  font-weight: 600;
   line-height: var(--leading-body);
   background: radial-gradient(1200px 600px at 80% -10%, #1c1c52 0%, var(--bg) 55%);
   color: var(--text);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 800;
 }
 
 #root {
@@ -164,6 +174,53 @@ blockquote {
 .scan-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+/* ===== Empty states =====
+   Shared across Home / Calendar / ChildProfile so every "nothing here yet"
+   moment invites an action instead of reading as a dead gray box. */
+.empty-state {
+  padding: 30px 22px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  border: 1.5px dashed var(--card-border);
+  background: var(--card);
+  cursor: default;
+}
+
+.empty-state.actionable {
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.empty-state.actionable:active {
+  transform: scale(0.98);
+  border-color: rgba(139, 92, 246, 0.4);
+}
+
+.empty-state-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 4px;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.22), rgba(139, 92, 246, 0.22));
+  color: var(--blue);
+}
+
+.empty-state h4 {
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.empty-state p {
+  font-size: 15px;
+  color: var(--muted);
+  max-width: 26ch;
 }
 
 .analyzing-card,

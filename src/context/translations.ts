@@ -105,7 +105,8 @@ const ar = {
 
   home_children_title: 'الأطفال',
   home_add_child: '+ إضافة طفل',
-  home_no_children: 'ما في أطفال مسجلين بعد. صوّر أول رسالة تبدأ.',
+  home_no_children_title: 'أضيفي أول طفل 👶',
+  home_no_children_subtitle: 'أنشئي ملف طفلك لتنظيم رسائله ومواعيده تلقائياً',
   home_monthly_total: 'المطلوب دفعه هالشهر',
   home_view_profile: 'الملف',
 
@@ -234,7 +235,8 @@ const de: Record<keyof typeof ar, string> = {
 
   home_children_title: 'Kinder',
   home_add_child: '+ Kind hinzufügen',
-  home_no_children: 'Noch keine Kinder registriert. Fotografiere den ersten Brief, um zu starten.',
+  home_no_children_title: 'Erstes Kind hinzufügen 👶',
+  home_no_children_subtitle: 'Lege ein Profil an, um Briefe und Termine automatisch zu organisieren',
   home_monthly_total: 'Diesen Monat fällig',
   home_view_profile: 'Profil',
 

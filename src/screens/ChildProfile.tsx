@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { PenLine, CheckCircle2, Wallet, CalendarClock, Mail } from 'lucide-react';
 import { FlowLayout } from '../components/FlowLayout';
 import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';
@@ -68,7 +69,12 @@ export function ChildProfile() {
         <h3>{t('child_profile_payments')}</h3>
       </div>
       {unpaidPayments.length === 0 ? (
-        <div className="card empty-note">{t('child_no_payments')}</div>
+        <div className="empty-state">
+          <div className="empty-state-icon">
+            <Wallet size={24} strokeWidth={2} />
+          </div>
+          <p>{t('child_no_payments')}</p>
+        </div>
       ) : (
         <div className="payments-list">
           {unpaidPayments.map((p) => (
@@ -106,7 +112,12 @@ export function ChildProfile() {
         <h3>{t('child_profile_deadlines')}</h3>
       </div>
       {deadlines.length === 0 ? (
-        <div className="card empty-note">{t('child_no_deadlines')}</div>
+        <div className="empty-state">
+          <div className="empty-state-icon">
+            <CalendarClock size={24} strokeWidth={2} />
+          </div>
+          <p>{t('child_no_deadlines')}</p>
+        </div>
       ) : (
         <div className="deadlines">
           {deadlines.map((d) => (
@@ -122,12 +133,17 @@ export function ChildProfile() {
         <h3>{t('child_profile_letters')}</h3>
       </div>
       {letters.length === 0 ? (
-        <div className="card empty-note">{t('child_no_letters')}</div>
+        <div className="empty-state">
+          <div className="empty-state-icon">
+            <Mail size={24} strokeWidth={2} />
+          </div>
+          <p>{t('child_no_letters')}</p>
+        </div>
       ) : (
         letters.map((l) => (
           <div className="letter" key={l.id} onClick={() => navigate('/result', { state: { result: l.analysis } })}>
             <div className={`ic ${l.analysis.action_required ? 'todo' : 'done'}`}>
-              {l.analysis.action_required ? '✍️' : '✅'}
+              {l.analysis.action_required ? <PenLine size={19} strokeWidth={2.25} /> : <CheckCircle2 size={19} strokeWidth={2.25} />}
             </div>
             <div className="tx">
               <h4>{isolateBidiRuns(l.analysis.summary)}</h4>
