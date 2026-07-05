@@ -17,6 +17,7 @@
   border: 1px solid var(--card-border);
   background: var(--card);
   color: var(--text);
+  box-shadow: var(--card-shadow);
   display: grid;
   place-items: center;
   font-size: 22px;

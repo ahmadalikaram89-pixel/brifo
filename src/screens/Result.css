@@ -26,17 +26,17 @@
 }
 
 .summary-card.urgency-high .urgency-badge {
-  background: rgba(248, 113, 113, 0.15);
+  background: color-mix(in srgb, var(--red) 15%, transparent);
   color: var(--red);
 }
 
 .summary-card.urgency-medium .urgency-badge {
-  background: rgba(251, 191, 36, 0.15);
+  background: color-mix(in srgb, var(--amber) 15%, transparent);
   color: var(--amber);
 }
 
 .summary-card.urgency-low .urgency-badge {
-  background: rgba(52, 211, 153, 0.15);
+  background: color-mix(in srgb, var(--green) 15%, transparent);
   color: var(--green);
 }
 

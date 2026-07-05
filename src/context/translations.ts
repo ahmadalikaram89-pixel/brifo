@@ -35,6 +35,9 @@ const ar = {
   coming_soon: 'قريباً — هاي الصفحة تحت التطوير 🚧',
   back: 'رجوع',
   settings_language: 'اللغة',
+  settings_theme: 'المظهر',
+  theme_light: 'فاتح',
+  theme_dark: 'داكن',
   tag_reply_needed: 'مطلوب رد',
   tag_done: 'تم',
 
@@ -164,6 +167,9 @@ const de: Record<keyof typeof ar, string> = {
   coming_soon: 'Demnächst — diese Seite ist in Arbeit 🚧',
   back: 'Zurück',
   settings_language: 'Sprache',
+  settings_theme: 'Erscheinungsbild',
+  theme_light: 'Hell',
+  theme_dark: 'Dunkel',
   tag_reply_needed: 'Antwort nötig',
   tag_done: 'Erledigt',
 

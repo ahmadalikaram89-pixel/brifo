@@ -11,6 +11,7 @@
   background: var(--card);
   border: 1px solid var(--card-border);
   border-radius: var(--radius);
+  box-shadow: var(--card-shadow);
   padding: 14px;
   backdrop-filter: blur(10px);
   cursor: pointer;
@@ -18,7 +19,7 @@
 }
 
 .guide-card:active {
-  background: rgba(255, 255, 255, 0.09);
+  background: var(--card-active);
 }
 
 .guide-icon {

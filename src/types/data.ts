@@ -1,6 +1,6 @@
 import type { LetterAnalysis } from './analysis';
 
-export const CHILD_COLORS = ['#3b82f6', '#f59e0b', '#34d399', '#f472b6', '#a78bfa', '#f87171'] as const;
+export const CHILD_COLORS = ['#2563eb', '#d97706', '#059669', '#db2777', '#7c3aed', '#dc2626'] as const;
 
 export interface Child {
   id: string;

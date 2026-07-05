@@ -13,12 +13,13 @@
   display: flex;
   justify-content: space-around;
   padding: 10px 8px calc(14px + env(safe-area-inset-bottom));
-  background: rgba(13, 13, 40, 0.85);
+  background: var(--nav-bg);
   backdrop-filter: blur(18px);
   border-top: 1px solid var(--card-border);
 }
 
 .ni {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -39,4 +40,14 @@
 
 .ni.on {
   color: var(--blue);
+}
+
+.ni.on::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  inset-inline: 30%;
+  height: 3px;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--blue), var(--purple));
 }

@@ -16,6 +16,7 @@
   background: var(--card);
   border: 1px solid var(--card-border);
   border-radius: 14px;
+  box-shadow: var(--card-shadow);
   padding: 14px;
   margin: 8px 0 4px;
   cursor: pointer;

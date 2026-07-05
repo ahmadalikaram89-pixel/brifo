@@ -1,15 +1,21 @@
+/* Light is the default theme for every user. Dark is opt-in via the Settings
+   toggle, which stamps data-theme="dark" on <html> (see ThemeContext). */
 :root {
-  --bg: #0b0b26;
-  --bg2: #12123a;
-  --card: rgba(255, 255, 255, 0.055);
-  --card-border: rgba(255, 255, 255, 0.1);
+  --bg: #f5f6fb;
+  --bg-tint: #eceefc;
+  --card: #ffffff;
+  --card-border: #e8eaf5;
+  --card-shadow: 0 2px 12px rgba(80, 90, 180, 0.08);
+  --nav-bg: rgba(255, 255, 255, 0.92);
+  --card-active: #eef0f9;
+  --track: rgba(28, 29, 58, 0.08);
   --blue: #3b82f6;
   --purple: #8b5cf6;
-  --text: #f2f3ff;
-  --muted: #b8bcdc;
-  --green: #34d399;
-  --amber: #fbbf24;
-  --red: #f87171;
+  --text: #1c1d3a;
+  --muted: #5a5e85;
+  --green: #059669;
+  --amber: #d97706;
+  --red: #dc2626;
   --radius: 20px;
   --space-1: 4px;
   --space-2: 8px;
@@ -22,6 +28,22 @@
   --text-body: 15px;
   --leading-body: 1.5;
   --measure: 60ch;
+}
+
+:root[data-theme='dark'] {
+  --bg: #0b0b26;
+  --bg-tint: #1c1c52;
+  --card: rgba(255, 255, 255, 0.055);
+  --card-border: rgba(255, 255, 255, 0.1);
+  --card-shadow: none;
+  --nav-bg: rgba(13, 13, 40, 0.85);
+  --card-active: rgba(255, 255, 255, 0.09);
+  --track: rgba(255, 255, 255, 0.08);
+  --text: #f2f3ff;
+  --muted: #b8bcdc;
+  --green: #34d399;
+  --amber: #fbbf24;
+  --red: #f87171;
 }
 
 /* Arabic needs looser line spacing than Latin. Scoped to `dir` (not `lang`) so a
@@ -48,7 +70,7 @@ body {
   font-size: var(--text-body);
   font-weight: 600;
   line-height: var(--leading-body);
-  background: radial-gradient(1200px 600px at 80% -10%, #1c1c52 0%, var(--bg) 55%);
+  background: radial-gradient(1200px 600px at 80% -10%, var(--bg-tint) 0%, var(--bg) 55%);
   color: var(--text);
 }
 
@@ -124,6 +146,7 @@ blockquote {
   background: var(--card);
   border: 1px solid var(--card-border);
   border-radius: var(--radius);
+  box-shadow: var(--card-shadow);
   backdrop-filter: blur(10px);
 }
 
@@ -158,6 +181,7 @@ blockquote {
   font-weight: 800;
   font-size: 15px;
   cursor: pointer;
+  box-shadow: var(--card-shadow);
   transition: transform 0.2s ease;
 }
 
@@ -168,6 +192,7 @@ blockquote {
 .scan-btn.primary {
   background: linear-gradient(135deg, var(--blue), var(--purple));
   border: none;
+  color: #fff;
   box-shadow: 0 10px 24px rgba(109, 92, 231, 0.4);
 }
 
@@ -188,6 +213,7 @@ blockquote {
   gap: 6px;
   border: 1.5px dashed var(--card-border);
   background: var(--card);
+  box-shadow: var(--card-shadow);
   cursor: default;
 }
 
@@ -198,7 +224,7 @@ blockquote {
 
 .empty-state.actionable:active {
   transform: scale(0.98);
-  border-color: rgba(139, 92, 246, 0.4);
+  border-color: color-mix(in srgb, var(--purple) 40%, transparent);
 }
 
 .empty-state-icon {
