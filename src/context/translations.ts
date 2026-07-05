@@ -103,12 +103,11 @@ const ar = {
   payment_paid_label: 'مدفوع',
   payment_due_label: 'موعد الدفع',
 
-  home_children_title: 'الأطفال',
-  home_add_child: '+ إضافة طفل',
-  home_no_children_title: 'أضيفي أول طفل 👶',
-  home_no_children_subtitle: 'أنشئي ملف طفلك لتنظيم رسائله ومواعيده تلقائياً',
+  home_add_child: 'إضافة طفل',
+  home_no_children_title: 'أضيفي أول طفل',
   home_monthly_total: 'المطلوب دفعه هالشهر',
   home_view_profile: 'الملف',
+  home_deadlines_count: 'مواعيد',
 
   assign_confirm_prefix: 'هاي ورقة لـ',
   assign_confirm_yes: 'ايه، صح ✅',
@@ -233,12 +232,11 @@ const de: Record<keyof typeof ar, string> = {
   payment_paid_label: 'Bezahlt',
   payment_due_label: 'Fällig am',
 
-  home_children_title: 'Kinder',
-  home_add_child: '+ Kind hinzufügen',
-  home_no_children_title: 'Erstes Kind hinzufügen 👶',
-  home_no_children_subtitle: 'Lege ein Profil an, um Briefe und Termine automatisch zu organisieren',
+  home_add_child: 'Kind hinzufügen',
+  home_no_children_title: 'Erstes Kind hinzufügen',
   home_monthly_total: 'Diesen Monat fällig',
   home_view_profile: 'Profil',
+  home_deadlines_count: 'Termine',
 
   assign_confirm_prefix: 'Ist das ein Brief für',
   assign_confirm_yes: 'Ja, richtig ✅',

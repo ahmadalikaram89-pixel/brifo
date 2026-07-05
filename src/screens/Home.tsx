@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { Camera, Baby, PenLine, CheckCircle2, BookOpen } from 'lucide-react';
+import { Camera, Plus, PenLine, CheckCircle2, BookOpen } from 'lucide-react';
 import { Header } from '../components/Header';
 import { TabLayout } from '../components/TabLayout';
 import { useLanguage } from '../context/LanguageContext';
@@ -38,6 +38,14 @@ export function Home() {
     return children.find((c) => c.id === childId);
   }
 
+  function upcomingCountFor(childId: string) {
+    return events.filter((e) => e.childId === childId && e.date >= today).length;
+  }
+
+  function avatarGradient(color: string) {
+    return `linear-gradient(135deg, ${color} 0%, color-mix(in srgb, ${color} 55%, white) 100%)`;
+  }
+
   return (
     <TabLayout>
       <Header />
@@ -47,6 +55,38 @@ export function Home() {
         <p>{t('greeting_subtitle')}</p>
       </div>
 
+      <div className="children-row">
+        {children.map((c) => {
+          const count = upcomingCountFor(c.id);
+          return (
+            <div className="child-card" key={c.id} onClick={() => navigate(`/child/${c.id}`)}>
+              <div className="child-card-avatar-wrap">
+                <div className="child-card-avatar" style={{ background: avatarGradient(c.color) }}>
+                  {c.name.slice(0, 1)}
+                </div>
+                {count > 0 && (
+                  <span className="child-card-badge">
+                    {count} {t('home_deadlines_count')}
+                  </span>
+                )}
+              </div>
+              <h4>{isolateBidiRuns(c.name)}</h4>
+            </div>
+          );
+        })}
+        <div
+          className={`child-card add-card${children.length === 0 ? ' first' : ''}`}
+          onClick={() => navigate('/child/new')}
+          role="button"
+          aria-label={t('home_add_child')}
+        >
+          <div className="child-card-avatar add-avatar">
+            <Plus size={22} strokeWidth={2.5} />
+          </div>
+          {children.length === 0 && <h4>{t('home_no_children_title')}</h4>}
+        </div>
+      </div>
+
       <div className="scan" onClick={() => navigate('/scan')}>
         <div className="cam">
           <Camera size={30} strokeWidth={2} />
@@ -54,32 +94,6 @@ export function Home() {
         <h2>{t('scan_title')}</h2>
         <p>{t('scan_subtitle')}</p>
       </div>
-
-      <div className="sec">
-        <h3>{t('home_children_title')}</h3>
-        {children.length > 0 && <a onClick={() => navigate('/child/new')}>{t('home_add_child')}</a>}
-      </div>
-      {children.length === 0 ? (
-        <div className="empty-state actionable" onClick={() => navigate('/child/new')}>
-          <div className="empty-state-icon">
-            <Baby size={26} strokeWidth={2} />
-          </div>
-          <h4>{t('home_no_children_title')}</h4>
-          <p>{t('home_no_children_subtitle')}</p>
-        </div>
-      ) : (
-        <div className="children-row">
-          {children.map((c) => (
-            <div className="child-card" key={c.id} onClick={() => navigate(`/child/${c.id}`)}>
-              <div className="child-card-avatar" style={{ background: c.color }}>
-                {c.name.slice(0, 1)}
-              </div>
-              <h4>{isolateBidiRuns(c.name)}</h4>
-              <p>{isolateBidiRuns(c.schoolClass)}</p>
-            </div>
-          ))}
-        </div>
-      )}
 
       {monthlyTotal > 0 && (
         <div className="card monthly-total-card">
@@ -101,7 +115,10 @@ export function Home() {
                 <div className="dl soon" key={e.id}>
                   <span className="when nums">{e.date}</span>
                   <h4>{isolateBidiRuns(e.title)}</h4>
-                  <p>{isolateBidiRuns(child ? `${child.name} · ${child.schoolClass}` : t('assign_all_children'))}</p>
+                  <p>
+                    {child && <span className="child-dot" style={{ background: child.color }} />}
+                    {isolateBidiRuns(child ? `${child.name} · ${child.schoolClass}` : t('assign_all_children'))}
+                  </p>
                 </div>
               );
             })}
