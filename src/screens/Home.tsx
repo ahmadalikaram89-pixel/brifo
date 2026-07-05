@@ -67,7 +67,7 @@ export function Home() {
                 </div>
                 {count > 0 && (
                   <span className="child-card-badge">
-                    {count} {t('home_deadlines_count')}
+                    <span className="nums">{count}</span> {t('home_deadlines_count')}
                   </span>
                 )}
               </div>

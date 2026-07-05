@@ -10,8 +10,13 @@ const SYSTEM_PROMPT =
   'Read this school letter and respond with ONLY a JSON object (no markdown fences, no prose) ' +
   'shaped exactly like: {"summary": string, "action_required": boolean, "actions": string[], ' +
   '"deadlines": [{"date": "YYYY-MM-DD", "what": string}], "needs_reply": boolean, ' +
-  '"urgency": "high" | "medium" | "low"}. Write the summary and all text fields in simple ' +
-  'Levantine-influenced Modern Standard Arabic.';
+  '"urgency": "high" | "medium" | "low", "detected_child_name": string | null, ' +
+  '"detected_child_class": string | null, "payments": [{"amount": number, "currency": string, ' +
+  '"reason": string, "due_date": "YYYY-MM-DD"}]}. If the letter mentions a specific child\'s name ' +
+  'and/or class, extract them into detected_child_name/detected_child_class, otherwise use null. ' +
+  'Extract any payments requested as separate structured items in "payments", in addition to listing ' +
+  'them in actions/deadlines. Write the summary and all text fields in simple Levantine-influenced ' +
+  'Modern Standard Arabic.';
 
 module.exports = async function handler(req, res) {
   if (req.method === 'GET') {
@@ -81,7 +86,20 @@ module.exports = async function handler(req, res) {
       return;
     }
 
-    res.status(200).json(parsed);
+    // Normalize against LetterAnalysis's shape (src/types/analysis.ts) so a
+    // field the model omits can't crash the frontend downstream (that's
+    // exactly what happened when this route's response was missing `payments`).
+    res.status(200).json({
+      summary: typeof parsed.summary === 'string' ? parsed.summary : '',
+      action_required: !!parsed.action_required,
+      actions: Array.isArray(parsed.actions) ? parsed.actions : [],
+      deadlines: Array.isArray(parsed.deadlines) ? parsed.deadlines : [],
+      needs_reply: !!parsed.needs_reply,
+      urgency: ['high', 'medium', 'low'].includes(parsed.urgency) ? parsed.urgency : 'low',
+      detected_child_name: parsed.detected_child_name ?? null,
+      detected_child_class: parsed.detected_child_class ?? null,
+      payments: Array.isArray(parsed.payments) ? parsed.payments : [],
+    });
   } catch (err) {
     console.error('[api/analyze] request failed:', err);
     res.status(500).json({ error: 'analysis failed', detail: err instanceof Error ? err.message : String(err) });
