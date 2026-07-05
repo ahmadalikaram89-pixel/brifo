@@ -1,7 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
-import { zodOutputFormat } from '@anthropic-ai/sdk/helpers/zod';
 import { z } from 'zod';
 import { ConfigError } from './analyze.js';
+import { toStructuredOutputFormat } from './structuredOutput.js';
 
 let client: Anthropic | null = null;
 
@@ -69,7 +69,7 @@ export async function generateReplyLetter(input: unknown): Promise<ReplyLetter> 
       max_tokens: 2048,
       system: SYSTEM_PROMPT,
       messages: [{ role: 'user', content: contextLines.join('\n') }],
-      output_config: { format: zodOutputFormat(ReplyResultSchema) },
+      output_config: { format: toStructuredOutputFormat(ReplyResultSchema) },
     });
   } catch (err) {
     console.error('[reply] Anthropic API call failed:', err);

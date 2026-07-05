@@ -1,6 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk';
-import { zodOutputFormat } from '@anthropic-ai/sdk/helpers/zod';
 import { z } from 'zod';
+import { toStructuredOutputFormat } from './structuredOutput.js';
 
 /** Thrown for server misconfiguration (e.g. missing API key), as opposed to
  * AnalyzeError which signals bad/invalid request input. Kept distinct so the
@@ -88,7 +88,7 @@ export async function analyzeLetterImage(imageBase64: string, mediaType: string)
           ],
         },
       ],
-      output_config: { format: zodOutputFormat(AnalysisSchema) },
+      output_config: { format: toStructuredOutputFormat(AnalysisSchema) },
     });
   } catch (err) {
     console.error('[analyze] Anthropic API call failed:', err);
