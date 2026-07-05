@@ -1,5 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { FlowLayout } from '../components/FlowLayout';
+import { AddToCalendarButton } from '../components/AddToCalendarButton';
 import { useLanguage } from '../context/LanguageContext';
 import { isolateBidiRuns } from '../lib/bidiText';
 import type { LetterAnalysis } from '../types/analysis';
@@ -56,6 +57,7 @@ export function Result() {
                   <div className="dl soon" key={i}>
                     <span className="when nums">{d.date}</span>
                     <h4>{isolateBidiRuns(d.what)}</h4>
+                    <AddToCalendarButton title={d.what} date={d.date} />
                   </div>
                 ))}
               </div>

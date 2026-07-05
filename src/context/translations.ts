@@ -130,6 +130,8 @@ const ar = {
   calendar_source_manual: 'موعد شخصي',
 
   notifications_label: 'الإشعارات',
+
+  add_to_calendar: 'أضف لتقويم الموبايل',
 } as const;
 
 const de: Record<keyof typeof ar, string> = {
@@ -262,6 +264,8 @@ const de: Record<keyof typeof ar, string> = {
   calendar_source_manual: 'Persönlicher Termin',
 
   notifications_label: 'Benachrichtigungen',
+
+  add_to_calendar: 'Zum Handy-Kalender hinzufügen',
 };
 
 export const translations = { ar, de };

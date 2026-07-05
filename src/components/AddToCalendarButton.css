@@ -1,0 +1,25 @@
+.ics-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 7px 12px;
+  border-radius: 99px;
+  border: 1px solid var(--card-border);
+  background: color-mix(in srgb, var(--blue) 10%, transparent);
+  color: var(--blue);
+  font-size: 12.5px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.ics-btn:active {
+  transform: scale(0.96);
+}
+
+.ics-btn-compact {
+  margin-top: 0;
+  padding: 6px;
+  flex-shrink: 0;
+}

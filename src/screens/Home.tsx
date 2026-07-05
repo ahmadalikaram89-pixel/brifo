@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { Camera, Plus, PenLine, CheckCircle2, BookOpen } from 'lucide-react';
 import { Header } from '../components/Header';
 import { TabLayout } from '../components/TabLayout';
+import { AddToCalendarButton } from '../components/AddToCalendarButton';
 import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';
 import { isolateBidiRuns } from '../lib/bidiText';
@@ -113,7 +114,10 @@ export function Home() {
               const child = childFor(e.childId);
               return (
                 <div className="dl soon" key={e.id}>
-                  <span className="when nums">{e.date}</span>
+                  <div className="dl-top">
+                    <span className="when nums">{e.date}</span>
+                    <AddToCalendarButton title={e.title} date={e.date} compact />
+                  </div>
                   <h4>{isolateBidiRuns(e.title)}</h4>
                   <p>
                     {child && <span className="child-dot" style={{ background: child.color }} />}

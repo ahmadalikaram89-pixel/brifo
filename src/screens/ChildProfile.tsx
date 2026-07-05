@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { PenLine, CheckCircle2, Wallet, CalendarClock, Mail } from 'lucide-react';
 import { FlowLayout } from '../components/FlowLayout';
+import { AddToCalendarButton } from '../components/AddToCalendarButton';
 import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';
 import { isolateBidiRuns } from '../lib/bidiText';
@@ -92,6 +93,7 @@ export function ChildProfile() {
                 <button className="scan-btn" onClick={() => markPaymentPaid(p.id, true)}>
                   {t('payment_mark_paid')}
                 </button>
+                <AddToCalendarButton title={p.reason} date={p.dueDate} compact />
               </div>
             </div>
           ))}
@@ -124,6 +126,7 @@ export function ChildProfile() {
             <div className="dl soon" key={d.id}>
               <span className="when nums">{d.date}</span>
               <h4>{isolateBidiRuns(d.title)}</h4>
+              <AddToCalendarButton title={d.title} date={d.date} />
             </div>
           ))}
         </div>

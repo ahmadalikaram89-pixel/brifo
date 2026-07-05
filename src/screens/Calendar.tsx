@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { CalendarX2 } from 'lucide-react';
 import { TabLayout } from '../components/TabLayout';
 import { Header } from '../components/Header';
+import { AddToCalendarButton } from '../components/AddToCalendarButton';
 import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';
 import { ALL_CHILDREN } from '../types/data';
@@ -104,6 +105,7 @@ export function Calendar() {
                   </p>
                 </div>
                 <span className="calendar-source">{t(SOURCE_LABEL_KEY[e.source])}</span>
+                <AddToCalendarButton title={e.title} date={e.date} compact />
               </div>
             );
           })}
