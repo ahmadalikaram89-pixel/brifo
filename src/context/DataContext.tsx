@@ -1,5 +1,13 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
-import { ALL_CHILDREN, CHILD_COLORS, type Child, type CalendarEvent, type Payment, type StoredLetter } from '../types/data';
+import {
+  ALL_CHILDREN,
+  CHILD_COLORS,
+  type Child,
+  type FamilyMemberType,
+  type CalendarEvent,
+  type Payment,
+  type StoredLetter,
+} from '../types/data';
 import type { LetterAnalysis } from '../types/analysis';
 
 const STORAGE_KEY = 'brifo_data';
@@ -17,7 +25,11 @@ function loadInitialState(): StoredState {
     if (!raw) return { children: [], letters: [], payments: [], events: [] };
     const parsed = JSON.parse(raw);
     return {
-      children: parsed.children ?? [],
+      // Profiles saved before family members existed have no `type` — treat them as children.
+      children: (parsed.children ?? []).map((c: Omit<Child, 'type'> & { type?: FamilyMemberType }) => ({
+        ...c,
+        type: c.type ?? 'child',
+      })),
       letters: parsed.letters ?? [],
       payments: parsed.payments ?? [],
       events: parsed.events ?? [],
@@ -61,6 +73,7 @@ export function findMatchingChild(children: Child[], name: string | null, school
 
 interface NewChildInput {
   name: string;
+  type: FamilyMemberType;
   schoolClass: string;
   school?: string;
   consentGiven: boolean;
@@ -94,6 +107,7 @@ export function DataProvider({ children: reactChildren }: { children: ReactNode 
     const child: Child = {
       id: makeId(),
       name: input.name,
+      type: input.type,
       schoolClass: input.schoolClass,
       school: input.school,
       color: CHILD_COLORS[state.children.length % CHILD_COLORS.length],

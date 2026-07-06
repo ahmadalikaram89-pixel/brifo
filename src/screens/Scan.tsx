@@ -255,7 +255,7 @@ export function Scan() {
         <div className="card assign-confirm-card">
           <p>
             {t('assign_confirm_prefix')}{' '}
-            {isolateBidiRuns(`${matchedChild.name} (${matchedChild.schoolClass})`)}
+            {isolateBidiRuns(matchedChild.schoolClass ? `${matchedChild.name} (${matchedChild.schoolClass})` : matchedChild.name)}
             {lang === 'ar' ? '؟' : '?'}
           </p>
           <div className="assign-confirm-actions">
@@ -278,7 +278,7 @@ export function Scan() {
             {children.map((c) => (
               <button key={c.id} className="assign-child-btn" onClick={() => finalizeAssignment(c.id)}>
                 <span className="assign-dot" style={{ background: c.color }} />
-                {isolateBidiRuns(`${c.name} (${c.schoolClass})`)}
+                {isolateBidiRuns(c.schoolClass ? `${c.name} (${c.schoolClass})` : c.name)}
               </button>
             ))}
             <button className="assign-child-btn" onClick={() => finalizeAssignment(ALL_CHILDREN)}>

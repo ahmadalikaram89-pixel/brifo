@@ -68,7 +68,7 @@ export function Calendar() {
               <option value={ALL_CHILDREN}>{t('assign_all_children')}</option>
               {children.map((c) => (
                 <option value={c.id} key={c.id}>
-                  {c.name} ({c.schoolClass})
+                  {c.schoolClass ? `${c.name} (${c.schoolClass})` : c.name}
                 </option>
               ))}
             </select>
@@ -102,7 +102,9 @@ export function Calendar() {
                   <h4>{isolateBidiRuns(e.title)}</h4>
                   <p>
                     <span className="nums">{e.date}</span> ·{' '}
-                    {isolateBidiRuns(child ? `${child.name} (${child.schoolClass})` : t('assign_all_children'))}
+                    {isolateBidiRuns(
+                      child ? (child.schoolClass ? `${child.name} (${child.schoolClass})` : child.name) : t('assign_all_children'),
+                    )}
                   </p>
                 </div>
                 <span className="calendar-source">{t(SOURCE_LABEL_KEY[e.source])}</span>

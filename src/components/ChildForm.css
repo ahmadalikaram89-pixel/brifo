@@ -9,6 +9,28 @@
   margin-top: 4px;
 }
 
+.member-type-toggle {
+  display: flex;
+  gap: 10px;
+}
+
+.member-type-toggle button {
+  flex: 1;
+  padding: 10px;
+  border-radius: 14px;
+  border: 1px solid var(--card-border);
+  background: transparent;
+  color: var(--text);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.member-type-toggle button.active {
+  background: linear-gradient(135deg, var(--blue), var(--purple));
+  color: #fff;
+  border-color: transparent;
+}
+
 .consent-row {
   display: flex;
   align-items: flex-start;

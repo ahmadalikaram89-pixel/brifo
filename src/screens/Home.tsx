@@ -32,8 +32,9 @@ export function Home() {
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
     .slice(0, 3);
 
-  const greeting = children[0]
-    ? t('greeting_title_named').replace('{name}', children[0].name)
+  const firstChild = children.find((c) => c.type === 'child');
+  const greeting = firstChild
+    ? t('greeting_title_named').replace('{name}', firstChild.name)
     : t('greeting_title_generic');
 
   function childFor(childId: string) {
@@ -57,6 +58,9 @@ export function Home() {
         <p>{t('greeting_subtitle')}</p>
       </div>
 
+      <div className="sec">
+        <h3>{t('section_family')}</h3>
+      </div>
       <div className="children-row">
         {children.map((c) => {
           const count = upcomingCountFor(c.id);
@@ -122,7 +126,9 @@ export function Home() {
                   <h4>{isolateBidiRuns(e.title)}</h4>
                   <p>
                     <span className="child-dot" style={{ background: dotBackground(colorsForChildId(e.childId, children)) }} />
-                    {isolateBidiRuns(child ? `${child.name} · ${child.schoolClass}` : t('assign_all_children'))}
+                    {isolateBidiRuns(
+                      child ? (child.schoolClass ? `${child.name} · ${child.schoolClass}` : child.name) : t('assign_all_children'),
+                    )}
                   </p>
                 </div>
               );

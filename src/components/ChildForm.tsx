@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
+import type { FamilyMemberType } from '../types/data';
 import './ChildForm.css';
 
 export interface ChildFormValues {
   name: string;
+  type: FamilyMemberType;
   schoolClass: string;
   school?: string;
   consentGiven: boolean;
@@ -12,12 +14,14 @@ export interface ChildFormValues {
 interface ChildFormProps {
   initialName?: string;
   initialClass?: string;
+  initialType?: FamilyMemberType;
   onSave: (values: ChildFormValues) => void;
   saveLabel?: string;
 }
 
-export function ChildForm({ initialName = '', initialClass = '', onSave, saveLabel }: ChildFormProps) {
+export function ChildForm({ initialName = '', initialClass = '', initialType = 'child', onSave, saveLabel }: ChildFormProps) {
   const { t } = useLanguage();
+  const [type, setType] = useState<FamilyMemberType>(initialType);
   const [name, setName] = useState(initialName);
   const [schoolClass, setSchoolClass] = useState(initialClass);
   const [school, setSchool] = useState('');
@@ -30,24 +34,47 @@ export function ChildForm({ initialName = '', initialClass = '', onSave, saveLab
   function submit() {
     setTouched(true);
     if (!canSave) return;
-    onSave({ name: name.trim(), schoolClass: schoolClass.trim(), school: school.trim() || undefined, consentGiven: true });
+    onSave({
+      name: name.trim(),
+      type,
+      schoolClass: type === 'child' ? schoolClass.trim() : '',
+      school: type === 'child' ? school.trim() || undefined : undefined,
+      consentGiven: true,
+    });
   }
 
   return (
     <div className="child-form">
       <div className="field">
+        <label>{t('member_type_label')}</label>
+        <div className="member-type-toggle">
+          <button type="button" className={type === 'child' ? 'active' : ''} onClick={() => setType('child')}>
+            {t('member_type_child')}
+          </button>
+          <button type="button" className={type === 'adult' ? 'active' : ''} onClick={() => setType('adult')}>
+            {t('member_type_adult')}
+          </button>
+        </div>
+      </div>
+
+      <div className="field">
         <label>{t('child_name_label')}</label>
         <input value={name} onChange={(e) => setName(e.target.value)} />
         {touched && !nameValid && <p className="field-error">{t('child_name_required')}</p>}
       </div>
-      <div className="field">
-        <label>{t('child_class_label')}</label>
-        <input value={schoolClass} onChange={(e) => setSchoolClass(e.target.value)} placeholder="3B" />
-      </div>
-      <div className="field">
-        <label>{t('child_school_label')}</label>
-        <input value={school} onChange={(e) => setSchool(e.target.value)} />
-      </div>
+
+      {type === 'child' && (
+        <>
+          <div className="field">
+            <label>{t('child_class_label')}</label>
+            <input value={schoolClass} onChange={(e) => setSchoolClass(e.target.value)} placeholder="3B" />
+          </div>
+          <div className="field">
+            <label>{t('child_school_label')}</label>
+            <input value={school} onChange={(e) => setSchool(e.target.value)} />
+          </div>
+        </>
+      )}
 
       <label className="consent-row">
         <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} />
