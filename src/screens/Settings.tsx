@@ -1,4 +1,4 @@
-import { useState, type CSSProperties } from 'react';
+import { useEffect, useRef, useState, type ChangeEvent, type CSSProperties } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus } from 'lucide-react';
 import { TabLayout } from '../components/TabLayout';
@@ -8,6 +8,8 @@ import { useLanguage } from '../context/LanguageContext';
 import { useTheme } from '../context/ThemeContext';
 import { useData } from '../context/DataContext';
 import { isolateBidiRuns } from '../lib/bidiText';
+import { downloadBackup, parseBackupFile, BackupParseError, type RestorableState } from '../lib/backup';
+import type { TranslationKey } from '../context/translations';
 import {
   enableReminders,
   disableReminders,
@@ -44,7 +46,7 @@ export function Settings() {
   const navigate = useNavigate();
   const { t, lang, setLang } = useLanguage();
   const { theme, setTheme } = useTheme();
-  const { children, events, rating, submitRating } = useData();
+  const { children, letters, payments, events, todos, rating, submitRating, restoreBackup } = useData();
 
   const [remindersOn, setRemindersOn] = useState(remindersEnabled());
   const [remindersDenied, setRemindersDenied] = useState(false);
@@ -53,6 +55,18 @@ export function Settings() {
   const [stars, setStars] = useState(rating?.stars ?? 0);
   const [comment, setComment] = useState(rating?.comment ?? '');
   const [ratingSaved, setRatingSaved] = useState(false);
+
+  const backupFileInputRef = useRef<HTMLInputElement>(null);
+  const [pendingRestore, setPendingRestore] = useState<RestorableState | null>(null);
+  const [restoreError, setRestoreError] = useState<TranslationKey | null>(null);
+  const [restoreDone, setRestoreDone] = useState(false);
+
+  // Restoring a backup replaces `rating` out from under this component's own
+  // once-initialized star/comment state — resync whenever it changes.
+  useEffect(() => {
+    setStars(rating?.stars ?? 0);
+    setComment(rating?.comment ?? '');
+  }, [rating]);
 
   function upcomingSyncEvents(): SyncablePushEvent[] {
     const today = new Date().toISOString().slice(0, 10);
@@ -94,6 +108,30 @@ export function Settings() {
     if (stars === 0) return;
     submitRating(stars, comment);
     setRatingSaved(true);
+  }
+
+  function handleExportBackup() {
+    downloadBackup({ children, letters, payments, events, todos, rating });
+  }
+
+  async function handleBackupFileSelected(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    setRestoreError(null);
+    setRestoreDone(false);
+    try {
+      setPendingRestore(await parseBackupFile(file));
+    } catch (err) {
+      setRestoreError(err instanceof BackupParseError ? (err.message as TranslationKey) : 'backup_error_read');
+    }
+  }
+
+  function handleConfirmRestore() {
+    if (!pendingRestore) return;
+    restoreBackup(pendingRestore);
+    setPendingRestore(null);
+    setRestoreDone(true);
   }
 
   return (
@@ -198,6 +236,48 @@ export function Settings() {
         />
         {ratingSaved && stars > 0 && (
           <p style={{ fontSize: 13, color: 'var(--green)', fontWeight: 700, marginTop: 8 }}>{t('rate_thanks')}</p>
+        )}
+      </div>
+
+      <div className="sec">
+        <h3>{t('backup_title')}</h3>
+      </div>
+      <div className="card" style={{ padding: '16px' }}>
+        <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 14 }}>{t('backup_subtitle')}</p>
+        <div style={{ display: 'flex', gap: 10 }}>
+          <button className="scan-btn" style={{ flex: 1 }} onClick={handleExportBackup}>
+            {t('backup_export')}
+          </button>
+          <button className="scan-btn" style={{ flex: 1 }} onClick={() => backupFileInputRef.current?.click()}>
+            {t('backup_import')}
+          </button>
+        </div>
+        <input
+          ref={backupFileInputRef}
+          type="file"
+          accept="application/json"
+          style={{ display: 'none' }}
+          onChange={handleBackupFileSelected}
+        />
+        {restoreError && <p style={{ fontSize: 12.5, color: 'var(--red)', marginTop: 8 }}>{t(restoreError)}</p>}
+        {restoreDone && <p style={{ fontSize: 12.5, color: 'var(--green)', fontWeight: 700, marginTop: 8 }}>{t('backup_restore_done')}</p>}
+        {pendingRestore && (
+          <div style={{ marginTop: 14, paddingTop: 14, borderTop: '1px solid var(--card-border)' }}>
+            <p style={{ fontSize: 14, fontWeight: 800, marginBottom: 4 }}>{t('backup_confirm_title')}</p>
+            <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 12 }}>
+              {t('backup_confirm_summary')
+                .replace('{children}', String(pendingRestore.children.length))
+                .replace('{events}', String(pendingRestore.events.length))}
+            </p>
+            <div style={{ display: 'flex', gap: 10 }}>
+              <button className="scan-btn" style={{ flex: 1 }} onClick={() => setPendingRestore(null)}>
+                {t('cancel')}
+              </button>
+              <button className="scan-btn primary" style={{ flex: 1 }} onClick={handleConfirmRestore}>
+                {t('backup_confirm_restore')}
+              </button>
+            </div>
+          </div>
         )}
       </div>
 
