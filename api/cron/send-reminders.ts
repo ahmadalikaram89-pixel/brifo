@@ -13,8 +13,13 @@ interface VercelResponse extends ServerResponse {
 
 /** How far back this run looks for due reminders. Must be >= the actual gap
  * between cron invocations (see vercel.json's schedule), otherwise a slow or
- * skipped run can let a reminder slip through unfired — err on the wide side. */
-const WINDOW_MINUTES = 20;
+ * skipped run can let a reminder slip through unfired — err on the wide side.
+ * Vercel's Hobby plan only allows daily cron jobs, so this runs once a day
+ * (~24h gap); 25h covers that plus scheduling drift. An "hour before" or
+ * "15 min before" reminder will still only fire once a day and land late —
+ * true near-real-time delivery needs the Pro plan or an external pinger
+ * hitting this route more often (see .env.example's CRON_SECRET note). */
+const WINDOW_MINUTES = 25 * 60;
 
 function isAuthorized(req: VercelRequest): boolean {
   const secret = process.env.CRON_SECRET;
