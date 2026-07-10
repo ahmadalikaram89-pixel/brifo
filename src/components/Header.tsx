@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Bell, Mail } from 'lucide-react';
+import { Bell } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';
 import { RemindersPanel } from './RemindersPanel';
@@ -17,9 +17,7 @@ export function Header() {
   return (
     <header className="brifo-header">
       <div className="brand">
-        <div className="logo">
-          <Mail size={20} strokeWidth={2.25} color="#fff" />
-        </div>
+        <img className="logo" src="/icons/logo-header.png" alt="" width={40} height={40} />
         <div className="brand-name" dir="ltr">
           Bri<span>fo</span>
         </div>
