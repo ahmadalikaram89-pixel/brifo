@@ -23,8 +23,10 @@
   --space-4: 24px;
   --space-5: 32px;
 
-  /* Typography */
-  --font-arabic: 'Cairo', 'Tajawal', 'Noto Sans Arabic', system-ui, sans-serif;
+  /* Typography: the device's own system UI font (San Francisco on iOS/macOS,
+     Segoe UI on Windows, Roboto on Android) rather than a downloaded webfont —
+     same rendering approach as this chat interface. */
+  --font-arabic: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, 'Noto Sans Arabic', sans-serif;
   --text-body: 15px;
   --leading-body: 1.5;
   --measure: 60ch;
