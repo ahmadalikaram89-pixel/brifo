@@ -48,3 +48,18 @@ export interface CalendarEvent {
   source: CalendarEventSource;
   createdAt: string;
 }
+
+export interface TodoItem {
+  id: string;
+  childId: string;
+  title: string;
+  done: boolean;
+  createdAt: string;
+  completedAt?: string;
+}
+
+export interface AppRating {
+  stars: number;
+  comment: string;
+  updatedAt: string;
+}

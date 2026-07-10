@@ -62,6 +62,73 @@ function apiDevMiddleware(): Plugin {
           }
         }),
       )
+
+      server.middlewares.use('/api/push-public-key', async (req, res) => {
+        if (req.method !== 'GET') {
+          res.statusCode = 405
+          res.end(JSON.stringify({ error: 'method not allowed' }))
+          return
+        }
+        const { getVapidPublicKey } = await import('./src/server/push.ts')
+        const { ConfigError } = await import('./src/server/analyze.ts')
+        res.setHeader('Content-Type', 'application/json')
+        try {
+          res.end(JSON.stringify({ publicKey: getVapidPublicKey() }))
+        } catch (err) {
+          res.statusCode = err instanceof ConfigError ? 500 : 500
+          res.end(JSON.stringify({ error: err instanceof Error ? err.message : 'unexpected error' }))
+        }
+      })
+
+      server.middlewares.use(
+        '/api/push-subscribe',
+        jsonPostRoute(async (body) => {
+          const { saveSubscription } = await import('./src/server/push.ts')
+          const { deviceId, subscription } = (body ?? {}) as { deviceId?: string; subscription?: unknown }
+          if (!deviceId || !subscription) return { status: 400, body: { error: 'invalid request' } }
+          await saveSubscription(deviceId, subscription as never)
+          return { status: 200, body: { ok: true } }
+        }),
+      )
+
+      server.middlewares.use(
+        '/api/push-unsubscribe',
+        jsonPostRoute(async (body) => {
+          const { removeSubscription } = await import('./src/server/push.ts')
+          const { deviceId } = (body ?? {}) as { deviceId?: string }
+          if (!deviceId) return { status: 400, body: { error: 'missing deviceId' } }
+          await removeSubscription(deviceId)
+          return { status: 200, body: { ok: true } }
+        }),
+      )
+
+      server.middlewares.use(
+        '/api/push-sync',
+        jsonPostRoute(async (body) => {
+          const { syncReminders } = await import('./src/server/push.ts')
+          const { deviceId, events, offsets, lang } = (body ?? {}) as {
+            deviceId?: string
+            events?: never[]
+            offsets?: number[]
+            lang?: 'ar' | 'de'
+          }
+          if (!deviceId || !events || !offsets) return { status: 400, body: { error: 'invalid request' } }
+          await syncReminders(deviceId, events, offsets, lang === 'de' ? 'de' : 'ar')
+          return { status: 200, body: { ok: true } }
+        }),
+      )
+
+      server.middlewares.use('/api/cron/send-reminders', async (_req, res) => {
+        const { runDueReminders } = await import('./src/server/push.ts')
+        res.setHeader('Content-Type', 'application/json')
+        try {
+          const result = await runDueReminders(20)
+          res.end(JSON.stringify({ ok: true, ...result }))
+        } catch (err) {
+          res.statusCode = 500
+          res.end(JSON.stringify({ error: err instanceof Error ? err.message : 'unexpected error' }))
+        }
+      })
     },
   }
 }
@@ -69,7 +136,22 @@ function apiDevMiddleware(): Plugin {
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
-  process.env.ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY || env.ANTHROPIC_API_KEY
+  const passthroughEnvVars = [
+    'ANTHROPIC_API_KEY',
+    'VAPID_PUBLIC_KEY',
+    'VAPID_PRIVATE_KEY',
+    'VAPID_SUBJECT',
+    'KV_REST_API_URL',
+    'KV_REST_API_TOKEN',
+    'CRON_SECRET',
+  ]
+  for (const key of passthroughEnvVars) {
+    // Assigning `undefined` to process.env[key] would coerce it to the
+    // string "undefined" (Node's env store is string-only) — worse than
+    // just leaving the key unset.
+    const value = process.env[key] || env[key]
+    if (value) process.env[key] = value
+  }
 
   return {
     plugins: [
@@ -77,6 +159,18 @@ export default defineConfig(({ mode }) => {
       apiDevMiddleware(),
       VitePWA({
         registerType: 'autoUpdate',
+        strategies: 'injectManifest',
+        srcDir: 'src',
+        filename: 'sw.ts',
+        injectManifest: {
+          globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
+        },
+        // Lets `npm run dev` register a real service worker too, so push
+        // notifications (which need one) are testable without a full build.
+        devOptions: {
+          enabled: true,
+          type: 'module',
+        },
         includeAssets: ['icons/icon.svg'],
         manifest: {
           name: 'Brifo — بريفو',
@@ -108,9 +202,6 @@ export default defineConfig(({ mode }) => {
               purpose: 'maskable',
             },
           ],
-        },
-        workbox: {
-          globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
         },
       }),
     ],

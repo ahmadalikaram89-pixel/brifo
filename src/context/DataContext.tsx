@@ -7,6 +7,8 @@ import {
   type CalendarEvent,
   type Payment,
   type StoredLetter,
+  type TodoItem,
+  type AppRating,
 } from '../types/data';
 import type { LetterAnalysis } from '../types/analysis';
 
@@ -17,12 +19,14 @@ interface StoredState {
   letters: StoredLetter[];
   payments: Payment[];
   events: CalendarEvent[];
+  todos: TodoItem[];
+  rating: AppRating | null;
 }
 
 function loadInitialState(): StoredState {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return { children: [], letters: [], payments: [], events: [] };
+    if (!raw) return { children: [], letters: [], payments: [], events: [], todos: [], rating: null };
     const parsed = JSON.parse(raw);
     return {
       // Profiles saved before family members existed have no `type` — treat them as children.
@@ -33,9 +37,11 @@ function loadInitialState(): StoredState {
       letters: parsed.letters ?? [],
       payments: parsed.payments ?? [],
       events: parsed.events ?? [],
+      todos: parsed.todos ?? [],
+      rating: parsed.rating ?? null,
     };
   } catch {
-    return { children: [], letters: [], payments: [], events: [] };
+    return { children: [], letters: [], payments: [], events: [], todos: [], rating: null };
   }
 }
 
@@ -84,6 +90,8 @@ interface DataContextValue {
   letters: StoredLetter[];
   payments: Payment[];
   events: CalendarEvent[];
+  todos: TodoItem[];
+  rating: AppRating | null;
   addChild: (input: NewChildInput) => Child;
   deleteChild: (childId: string) => void;
   addLetter: (childId: string, analysis: LetterAnalysis) => StoredLetter;
@@ -92,6 +100,10 @@ interface DataContextValue {
   lettersForChild: (childId: string) => StoredLetter[];
   paymentsForChild: (childId: string) => Payment[];
   eventsForChild: (childId: string) => CalendarEvent[];
+  addTodo: (childId: string, title: string) => TodoItem;
+  toggleTodo: (todoId: string) => void;
+  deleteTodo: (todoId: string) => void;
+  submitRating: (stars: number, comment: string) => void;
 }
 
 const DataContext = createContext<DataContextValue | null>(null);
@@ -121,10 +133,12 @@ export function DataProvider({ children: reactChildren }: { children: ReactNode 
 
   function deleteChild(childId: string) {
     setState((prev) => ({
+      ...prev,
       children: prev.children.filter((c) => c.id !== childId),
       letters: prev.letters.filter((l) => l.childId !== childId),
       payments: prev.payments.filter((p) => p.childId !== childId),
       events: prev.events.filter((e) => e.childId !== childId),
+      todos: prev.todos.filter((item) => item.childId !== childId),
     }));
   }
 
@@ -196,15 +210,51 @@ export function DataProvider({ children: reactChildren }: { children: ReactNode 
     return event;
   }
 
+  function addTodo(childId: string, title: string): TodoItem {
+    const todo: TodoItem = {
+      id: makeId(),
+      childId,
+      title,
+      done: false,
+      createdAt: new Date().toISOString(),
+    };
+    setState((prev) => ({ ...prev, todos: [...prev.todos, todo] }));
+    return todo;
+  }
+
+  function toggleTodo(todoId: string) {
+    setState((prev) => ({
+      ...prev,
+      todos: prev.todos.map((item) =>
+        item.id === todoId
+          ? { ...item, done: !item.done, completedAt: !item.done ? new Date().toISOString() : undefined }
+          : item,
+      ),
+    }));
+  }
+
+  function deleteTodo(todoId: string) {
+    setState((prev) => ({ ...prev, todos: prev.todos.filter((item) => item.id !== todoId) }));
+  }
+
+  function submitRating(stars: number, comment: string) {
+    setState((prev) => ({ ...prev, rating: { stars, comment, updatedAt: new Date().toISOString() } }));
+  }
+
+  // A parent ("adult" member) manages the whole family, not just their own
+  // items, so their profile aggregates everyone's letters/payments/events
+  // instead of only what's directly assigned to them.
+  const isAdultMember = (childId: string) => state.children.find((c) => c.id === childId)?.type === 'adult';
+
   // An "الكل" (all-children) item is stored once with childId === ALL_CHILDREN
   // rather than duplicated per child, so every per-child lookup must also
   // pull in those shared records instead of matching only the exact id.
   const lettersForChild = (childId: string) =>
-    state.letters.filter((l) => l.childId === childId || l.childId === ALL_CHILDREN);
+    isAdultMember(childId) ? state.letters : state.letters.filter((l) => l.childId === childId || l.childId === ALL_CHILDREN);
   const paymentsForChild = (childId: string) =>
-    state.payments.filter((p) => p.childId === childId || p.childId === ALL_CHILDREN);
+    isAdultMember(childId) ? state.payments : state.payments.filter((p) => p.childId === childId || p.childId === ALL_CHILDREN);
   const eventsForChild = (childId: string) =>
-    state.events.filter((e) => e.childId === childId || e.childId === ALL_CHILDREN);
+    isAdultMember(childId) ? state.events : state.events.filter((e) => e.childId === childId || e.childId === ALL_CHILDREN);
 
   return (
     <DataContext.Provider
@@ -213,6 +263,8 @@ export function DataProvider({ children: reactChildren }: { children: ReactNode 
         letters: state.letters,
         payments: state.payments,
         events: state.events,
+        todos: state.todos,
+        rating: state.rating,
         addChild,
         deleteChild,
         addLetter,
@@ -221,6 +273,10 @@ export function DataProvider({ children: reactChildren }: { children: ReactNode 
         lettersForChild,
         paymentsForChild,
         eventsForChild,
+        addTodo,
+        toggleTodo,
+        deleteTodo,
+        submitRating,
       }}
     >
       {reactChildren}

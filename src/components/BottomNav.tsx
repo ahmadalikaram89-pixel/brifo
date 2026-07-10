@@ -1,11 +1,12 @@
 import { NavLink } from 'react-router-dom';
-import { Home, CalendarDays, BookOpen, Settings } from 'lucide-react';
+import { Home, CalendarDays, ListChecks, BookOpen, Settings } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import './BottomNav.css';
 
 const items = [
   { to: '/', Icon: Home, key: 'nav_home' as const },
   { to: '/calendar', Icon: CalendarDays, key: 'nav_calendar' as const },
+  { to: '/todo', Icon: ListChecks, key: 'nav_todo' as const },
   { to: '/guide', Icon: BookOpen, key: 'nav_guide' as const },
   { to: '/settings', Icon: Settings, key: 'nav_settings' as const },
 ];

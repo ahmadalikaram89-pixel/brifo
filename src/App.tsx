@@ -11,8 +11,18 @@ import { Paywall } from './screens/Paywall';
 import { Settings } from './screens/Settings';
 import { ChildNew } from './screens/ChildNew';
 import { ChildProfile } from './screens/ChildProfile';
+import { Todo } from './screens/Todo';
+import { useLanguage } from './context/LanguageContext';
+import { useData } from './context/DataContext';
+import { useReminderScheduler } from './lib/useReminderScheduler';
+import { usePushSync } from './lib/usePushSync';
 
 function App() {
+  const { t, lang } = useLanguage();
+  const { events } = useData();
+  useReminderScheduler(events, t('reminders_body_day_before'), t('reminders_body_hour_before'), t('reminders_body_soon'));
+  usePushSync(events, lang);
+
   return (
     <Routes>
       <Route path="/onboarding" element={<Onboarding />} />
@@ -27,6 +37,7 @@ function App() {
       <Route path="/settings" element={<Settings />} />
       <Route path="/child/new" element={<ChildNew />} />
       <Route path="/child/:id" element={<ChildProfile />} />
+      <Route path="/todo" element={<Todo />} />
     </Routes>
   );
 }
