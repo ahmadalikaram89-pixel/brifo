@@ -15,11 +15,13 @@ import { Todo } from './screens/Todo';
 import { useLanguage } from './context/LanguageContext';
 import { useData } from './context/DataContext';
 import { useReminderScheduler } from './lib/useReminderScheduler';
+import { usePushSync } from './lib/usePushSync';
 
 function App() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const { events } = useData();
-  useReminderScheduler(events, t('reminders_today'), t('reminders_tomorrow'));
+  useReminderScheduler(events, t('reminders_body_day_before'), t('reminders_body_hour_before'), t('reminders_body_soon'));
+  usePushSync(events, lang);
 
   return (
     <Routes>
