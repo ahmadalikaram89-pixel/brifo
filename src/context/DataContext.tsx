@@ -11,6 +11,7 @@ import {
   type AppRating,
 } from '../types/data';
 import type { LetterAnalysis } from '../types/analysis';
+import type { RestorableState } from '../lib/backup';
 
 const STORAGE_KEY = 'brifo_data';
 
@@ -104,6 +105,7 @@ interface DataContextValue {
   toggleTodo: (todoId: string) => void;
   deleteTodo: (todoId: string) => void;
   submitRating: (stars: number, comment: string) => void;
+  restoreBackup: (data: RestorableState) => void;
 }
 
 const DataContext = createContext<DataContextValue | null>(null);
@@ -241,6 +243,17 @@ export function DataProvider({ children: reactChildren }: { children: ReactNode 
     setState((prev) => ({ ...prev, rating: { stars, comment, updatedAt: new Date().toISOString() } }));
   }
 
+  function restoreBackup(data: RestorableState) {
+    setState({
+      children: data.children.map((c) => ({ ...c, type: c.type ?? 'child' })),
+      letters: data.letters,
+      payments: data.payments,
+      events: data.events,
+      todos: data.todos,
+      rating: data.rating,
+    });
+  }
+
   // A parent ("adult" member) manages the whole family, not just their own
   // items, so their profile aggregates everyone's letters/payments/events
   // instead of only what's directly assigned to them.
@@ -277,6 +290,7 @@ export function DataProvider({ children: reactChildren }: { children: ReactNode 
         toggleTodo,
         deleteTodo,
         submitRating,
+        restoreBackup,
       }}
     >
       {reactChildren}

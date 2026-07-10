@@ -176,6 +176,17 @@ const ar = {
   rate_subtitle: 'رأيك بيساعدنا نطوّر Brifo أكتر',
   rate_comment_placeholder: 'اكتبي ملاحظاتك (اختياري)',
   rate_thanks: 'شكراً على تقييمك ✓',
+
+  backup_title: 'نسخة احتياطية',
+  backup_subtitle: 'بياناتك محفوظة على هالجهاز بس. صدّري نسخة قبل ما تحذفي التطبيق أو تبدّلي جهاز، حتى ما تخسريها.',
+  backup_export: 'تصدير نسخة احتياطية',
+  backup_import: 'استعادة من ملف',
+  backup_confirm_title: 'استعادة البيانات؟',
+  backup_confirm_summary: 'الملف فيه {children} فرد و {events} موعد. الاستعادة رح تستبدل كل بيانات التطبيق الحالية بمحتوى الملف.',
+  backup_confirm_restore: 'تأكيد الاستعادة',
+  backup_restore_done: 'تم استرجاع بياناتك ✓',
+  backup_error_read: 'ما قدرنا نقرأ الملف',
+  backup_error_format: 'هاد مش ملف نسخة احتياطية صحيح من Brifo',
 } as const;
 
 const de: Record<keyof typeof ar, string> = {
@@ -354,6 +365,17 @@ const de: Record<keyof typeof ar, string> = {
   rate_subtitle: 'Deine Meinung hilft uns, Brifo zu verbessern',
   rate_comment_placeholder: 'Dein Feedback (optional)',
   rate_thanks: 'Danke für deine Bewertung ✓',
+
+  backup_title: 'Datensicherung',
+  backup_subtitle: 'Deine Daten sind nur auf diesem Gerät gespeichert. Exportiere eine Sicherung, bevor du die App löschst oder das Gerät wechselst.',
+  backup_export: 'Sicherung exportieren',
+  backup_import: 'Aus Datei wiederherstellen',
+  backup_confirm_title: 'Daten wiederherstellen?',
+  backup_confirm_summary: 'Die Datei enthält {children} Personen und {events} Termine. Das Wiederherstellen ersetzt alle aktuellen Daten der App mit dem Inhalt der Datei.',
+  backup_confirm_restore: 'Wiederherstellung bestätigen',
+  backup_restore_done: 'Deine Daten wurden wiederhergestellt ✓',
+  backup_error_read: 'Die Datei konnte nicht gelesen werden',
+  backup_error_format: 'Das ist keine gültige Brifo-Sicherungsdatei',
 };
 
 export const translations = { ar, de };
