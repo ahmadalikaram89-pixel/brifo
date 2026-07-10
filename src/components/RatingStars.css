@@ -1,0 +1,21 @@
+.rating-stars {
+  display: flex;
+  gap: 6px;
+  direction: ltr;
+}
+
+.rating-star {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: none;
+  background: transparent;
+  color: var(--card-border);
+  cursor: pointer;
+  padding: 0;
+}
+
+.rating-star.on {
+  color: var(--amber);
+}

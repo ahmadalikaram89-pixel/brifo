@@ -3,6 +3,7 @@ export type Lang = 'ar' | 'de';
 const ar = {
   nav_home: 'الرئيسية',
   nav_calendar: 'التقويم',
+  nav_todo: 'المهام',
   nav_guide: 'الدليل',
   nav_settings: 'الإعدادات',
 
@@ -136,11 +137,42 @@ const ar = {
   notifications_label: 'الإشعارات',
 
   add_to_calendar: 'أضف لتقويم الموبايل',
+
+  screen_todo: 'المهام',
+  todo_add: '+ إضافة مهمة',
+  todo_title_label: 'المهمة',
+  todo_title_placeholder: 'مثلاً: تجهيز حقيبة المدرسة',
+  todo_section_new: 'جديد',
+  todo_section_new_empty: 'ما في مهام جديدة',
+  todo_section_done: 'تم إنجازه',
+  todo_section_done_empty: 'ما في مهام منجزة بعد',
+  todo_empty: 'أضيفي أول مهمة',
+  todo_mark_done: 'تحديد كمنجز',
+  todo_mark_undone: 'إلغاء الإنجاز',
+  todo_delete: 'حذف المهمة',
+
+  reminders_panel_title: 'التذكيرات',
+  reminders_empty: 'ما في تذكيرات قريبة',
+  reminders_today: 'اليوم',
+  reminders_tomorrow: 'بكرا',
+  reminders_title: 'تذكير بالمواعيد',
+  reminders_toggle_label: 'إشعارات المواعيد',
+  reminders_toggle_subtitle: 'خلي الموبايل يذكّرك بالمواعيد المهمة قبل ما توصل',
+  reminders_on: 'مفعّلة ✓',
+  reminders_off: 'تفعيل الإشعارات',
+  reminders_permission_denied: 'لازم تسمحي بالإشعارات من إعدادات المتصفح أو الموبايل',
+  reminders_unsupported: 'الإشعارات مو مدعومة على هالجهاز',
+
+  rate_title: 'قيّم البرنامج',
+  rate_subtitle: 'رأيك بيساعدنا نطوّر Brifo أكتر',
+  rate_comment_placeholder: 'اكتبي ملاحظاتك (اختياري)',
+  rate_thanks: 'شكراً على تقييمك ✓',
 } as const;
 
 const de: Record<keyof typeof ar, string> = {
   nav_home: 'Start',
   nav_calendar: 'Kalender',
+  nav_todo: 'Aufgaben',
   nav_guide: 'Ratgeber',
   nav_settings: 'Einstellungen',
 
@@ -274,6 +306,36 @@ const de: Record<keyof typeof ar, string> = {
   notifications_label: 'Benachrichtigungen',
 
   add_to_calendar: 'Zum Handy-Kalender hinzufügen',
+
+  screen_todo: 'Aufgaben',
+  todo_add: '+ Aufgabe hinzufügen',
+  todo_title_label: 'Aufgabe',
+  todo_title_placeholder: 'z. B.: Schultasche packen',
+  todo_section_new: 'Neu',
+  todo_section_new_empty: 'Keine neuen Aufgaben',
+  todo_section_done: 'Erledigt',
+  todo_section_done_empty: 'Noch keine erledigten Aufgaben',
+  todo_empty: 'Erste Aufgabe hinzufügen',
+  todo_mark_done: 'Als erledigt markieren',
+  todo_mark_undone: 'Erledigung rückgängig machen',
+  todo_delete: 'Aufgabe löschen',
+
+  reminders_panel_title: 'Erinnerungen',
+  reminders_empty: 'Keine anstehenden Erinnerungen',
+  reminders_today: 'Heute',
+  reminders_tomorrow: 'Morgen',
+  reminders_title: 'Terminerinnerungen',
+  reminders_toggle_label: 'Terminbenachrichtigungen',
+  reminders_toggle_subtitle: 'Lass dich rechtzeitig an wichtige Termine erinnern',
+  reminders_on: 'Aktiviert ✓',
+  reminders_off: 'Benachrichtigungen aktivieren',
+  reminders_permission_denied: 'Bitte Benachrichtigungen in den Browser- oder Systemeinstellungen erlauben',
+  reminders_unsupported: 'Benachrichtigungen werden auf diesem Gerät nicht unterstützt',
+
+  rate_title: 'App bewerten',
+  rate_subtitle: 'Deine Meinung hilft uns, Brifo zu verbessern',
+  rate_comment_placeholder: 'Dein Feedback (optional)',
+  rate_thanks: 'Danke für deine Bewertung ✓',
 };
 
 export const translations = { ar, de };
