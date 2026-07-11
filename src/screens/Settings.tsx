@@ -343,6 +343,18 @@ export function Settings() {
           <p style={{ fontSize: 15, fontWeight: 700 }}>{t('home_add_child')}</p>
         </div>
       </div>
+
+      <div className="sec">
+        <h3>{t('settings_legal_section')}</h3>
+      </div>
+      <div className="card" style={{ padding: 8 }}>
+        <div
+          onClick={() => navigate('/datenschutz')}
+          style={{ display: 'flex', alignItems: 'center', padding: '10px 8px', cursor: 'pointer' }}
+        >
+          <p style={{ fontSize: 15, fontWeight: 700, flex: 1 }}>{t('settings_privacy_link')}</p>
+        </div>
+      </div>
     </TabLayout>
   );
 }

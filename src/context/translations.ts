@@ -187,6 +187,15 @@ const ar = {
   backup_restore_done: 'تم استرجاع بياناتك ✓',
   backup_error_read: 'ما قدرنا نقرأ الملف',
   backup_error_format: 'هاد مش ملف نسخة احتياطية صحيح من Brifo',
+
+  privacy_title: 'سياسة الخصوصية',
+  privacy_last_updated: 'آخر تحديث:',
+  privacy_gate_title: 'حدّثنا سياسة الخصوصية',
+  privacy_gate_summary: 'قبل ما تكملي استخدام Brifo، لازم تطّلعي على سياسة الخصوصية الجديدة وتوافقي عليها.',
+  privacy_gate_read_full: 'قراءة السياسة كاملة',
+  privacy_gate_accept: 'أوافق وأكمل',
+  settings_legal_section: 'قانوني',
+  settings_privacy_link: 'سياسة الخصوصية',
 } as const;
 
 const de: Record<keyof typeof ar, string> = {
@@ -376,6 +385,15 @@ const de: Record<keyof typeof ar, string> = {
   backup_restore_done: 'Deine Daten wurden wiederhergestellt ✓',
   backup_error_read: 'Die Datei konnte nicht gelesen werden',
   backup_error_format: 'Das ist keine gültige Brifo-Sicherungsdatei',
+
+  privacy_title: 'Datenschutzerklärung',
+  privacy_last_updated: 'Zuletzt aktualisiert:',
+  privacy_gate_title: 'Wir haben die Datenschutzerklärung aktualisiert',
+  privacy_gate_summary: 'Bevor du Brifo weiter nutzt, lies bitte die neue Datenschutzerklärung und stimme ihr zu.',
+  privacy_gate_read_full: 'Vollständige Erklärung lesen',
+  privacy_gate_accept: 'Zustimmen und weiter',
+  settings_legal_section: 'Rechtliches',
+  settings_privacy_link: 'Datenschutzerklärung',
 };
 
 export const translations = { ar, de };
