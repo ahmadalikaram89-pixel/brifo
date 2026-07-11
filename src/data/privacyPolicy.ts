@@ -1,16 +1,18 @@
 /** Draft Datenschutzerklärung / سياسة الخصوصية — describes what Brifo actually
  * does technically (see DataContext, src/server/analyze.ts, src/server/push.ts).
- * This is NOT a substitute for legal review: the hosting region placeholder
- * in section 5 still needs filling in, and a lawyer should sign off before
- * this is relied on for a paying product. Company details (name/address/
- * email/register number) are filled in as of v3. */
+ * This is NOT a substitute for legal review: a lawyer should sign off before
+ * this is relied on for a paying product. All placeholders (company
+ * details, hosting region) are filled in as of v4 — but the "servers within
+ * the EU" claim in section 5 is only true once the Vercel project's
+ * Function Region is actually pinned to an EU region (Project Settings →
+ * Functions), which is a separate step from this text. */
 
 export interface PolicySection {
   heading: string;
   body: string;
 }
 
-export const PRIVACY_POLICY_VERSION = 3;
+export const PRIVACY_POLICY_VERSION = 4;
 export const PRIVACY_POLICY_LAST_UPDATED = '2026-07-11';
 
 export const privacyPolicyDe: PolicySection[] = [
@@ -32,7 +34,7 @@ export const privacyPolicyDe: PolicySection[] = [
   },
   {
     heading: '5. Weitergabe an Dritte (Auftragsverarbeiter)',
-    body: 'Anthropic PBC (USA): verarbeitet fotografierte Schulbriefe einmalig zur Texterkennung/Analyse. Es gilt eine Datenübermittlung in ein Drittland (USA); wir stellen sicher, dass hierfür geeignete Garantien (z. B. Standardvertragsklauseln) bestehen.\n\nVercel Inc.: Hosting der App und, falls Push-Benachrichtigungen genutzt werden, Speicherung der dafür nötigen Daten (siehe Punkt 3d). [Region/Serverstandort bitte ergänzen.]\n\nWir verkaufen keine Daten an Dritte und nutzen keine Werbe- oder Tracking-Dienste.',
+    body: 'Anthropic PBC (USA): verarbeitet fotografierte Schulbriefe einmalig zur Texterkennung/Analyse. Es gilt eine Datenübermittlung in ein Drittland (USA); wir stellen sicher, dass hierfür geeignete Garantien (z. B. Standardvertragsklauseln) bestehen.\n\nVercel Inc.: Hosting der App und, falls Push-Benachrichtigungen genutzt werden, Speicherung der dafür nötigen Daten (siehe Punkt 3d), auf Servern innerhalb der Europäischen Union.\n\nWir verkaufen keine Daten an Dritte und nutzen keine Werbe- oder Tracking-Dienste.',
   },
   {
     heading: '6. Daten von Kindern',
@@ -67,7 +69,7 @@ export const privacyPolicyAr: PolicySection[] = [
   },
   {
     heading: '٥. مشاركة البيانات مع أطراف تالتة',
-    body: 'Anthropic PBC (أمريكا): بتعالج صور رسائل المدرسة مرة وحدة لتحليلها. هاد نقل بيانات لدولة خارج الاتحاد الأوروبي؛ منتأكد إنه في ضمانات مناسبة إلها (متل بنود تعاقدية معيارية).\n\nVercel Inc.: استضافة التطبيق، وإذا استخدمتِ إشعارات التذكير، تخزين البيانات اللازمة إلها (شوفي البند ٣-د). [الرجاء إضافة موقع السيرفر/المنطقة.]\n\nما منبيع أي بيانات لأي جهة، وما منستخدم أدوات إعلانات أو تتبّع.',
+    body: 'Anthropic PBC (أمريكا): بتعالج صور رسائل المدرسة مرة وحدة لتحليلها. هاد نقل بيانات لدولة خارج الاتحاد الأوروبي؛ منتأكد إنه في ضمانات مناسبة إلها (متل بنود تعاقدية معيارية).\n\nVercel Inc.: استضافة التطبيق، وإذا استخدمتِ إشعارات التذكير، تخزين البيانات اللازمة إلها (شوفي البند ٣-د)، على سيرفرات داخل الاتحاد الأوروبي.\n\nما منبيع أي بيانات لأي جهة، وما منستخدم أدوات إعلانات أو تتبّع.',
   },
   {
     heading: '٦. بيانات الأطفال',
