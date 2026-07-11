@@ -196,6 +196,10 @@ const ar = {
   privacy_gate_accept: 'أوافق وأكمل',
   settings_legal_section: 'قانوني',
   settings_privacy_link: 'سياسة الخصوصية',
+  agb_title: 'شروط الاستخدام',
+  settings_agb_link: 'شروط الاستخدام',
+  impressum_title: 'بيان الهوية القانونية',
+  settings_impressum_link: 'بيان الهوية القانونية (Impressum)',
 } as const;
 
 const de: Record<keyof typeof ar, string> = {
@@ -394,6 +398,10 @@ const de: Record<keyof typeof ar, string> = {
   privacy_gate_accept: 'Zustimmen und weiter',
   settings_legal_section: 'Rechtliches',
   settings_privacy_link: 'Datenschutzerklärung',
+  agb_title: 'AGB',
+  settings_agb_link: 'Allgemeine Geschäftsbedingungen (AGB)',
+  impressum_title: 'Impressum',
+  settings_impressum_link: 'Impressum',
 };
 
 export const translations = { ar, de };

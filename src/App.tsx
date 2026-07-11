@@ -14,6 +14,8 @@ import { ChildNew } from './screens/ChildNew';
 import { ChildProfile } from './screens/ChildProfile';
 import { Todo } from './screens/Todo';
 import { Datenschutz } from './screens/Datenschutz';
+import { Impressum } from './screens/Impressum';
+import { AGB } from './screens/AGB';
 import { PrivacyConsentGate } from './components/PrivacyConsentGate';
 import { useLanguage } from './context/LanguageContext';
 import { useData } from './context/DataContext';
@@ -29,9 +31,11 @@ function App() {
   useReminderScheduler(events, t('reminders_body_day_before'), t('reminders_body_hour_before'), t('reminders_body_soon'));
   usePushSync(events, lang);
 
-  // The privacy policy itself must stay reachable even before acceptance,
-  // otherwise there's no way to read it before agreeing.
-  if (!consented && location.pathname !== '/datenschutz') {
+  // The privacy policy must stay reachable even before acceptance (otherwise
+  // there's no way to read it before agreeing), and Austrian law requires the
+  // Impressum to be accessible without any barrier at all.
+  const bypassesGate = location.pathname === '/datenschutz' || location.pathname === '/impressum';
+  if (!consented && !bypassesGate) {
     return <PrivacyConsentGate onAccept={() => setConsented(true)} />;
   }
 
@@ -51,6 +55,8 @@ function App() {
       <Route path="/child/:id" element={<ChildProfile />} />
       <Route path="/todo" element={<Todo />} />
       <Route path="/datenschutz" element={<Datenschutz />} />
+      <Route path="/impressum" element={<Impressum />} />
+      <Route path="/agb" element={<AGB />} />
     </Routes>
   );
 }

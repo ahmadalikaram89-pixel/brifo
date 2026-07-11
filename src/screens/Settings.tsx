@@ -350,9 +350,21 @@ export function Settings() {
       <div className="card" style={{ padding: 8 }}>
         <div
           onClick={() => navigate('/datenschutz')}
-          style={{ display: 'flex', alignItems: 'center', padding: '10px 8px', cursor: 'pointer' }}
+          style={{ display: 'flex', alignItems: 'center', padding: '10px 8px', cursor: 'pointer', borderBottom: '1px solid var(--card-border)' }}
         >
           <p style={{ fontSize: 15, fontWeight: 700, flex: 1 }}>{t('settings_privacy_link')}</p>
+        </div>
+        <div
+          onClick={() => navigate('/agb')}
+          style={{ display: 'flex', alignItems: 'center', padding: '10px 8px', cursor: 'pointer', borderBottom: '1px solid var(--card-border)' }}
+        >
+          <p style={{ fontSize: 15, fontWeight: 700, flex: 1 }}>{t('settings_agb_link')}</p>
+        </div>
+        <div
+          onClick={() => navigate('/impressum')}
+          style={{ display: 'flex', alignItems: 'center', padding: '10px 8px', cursor: 'pointer' }}
+        >
+          <p style={{ fontSize: 15, fontWeight: 700, flex: 1 }}>{t('settings_impressum_link')}</p>
         </div>
       </div>
     </TabLayout>
