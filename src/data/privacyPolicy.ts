@@ -1,22 +1,22 @@
 /** Draft Datenschutzerklärung / سياسة الخصوصية — describes what Brifo actually
  * does technically (see DataContext, src/server/analyze.ts, src/server/push.ts).
- * This is NOT a substitute for legal review: the remaining bracketed
- * placeholders (commercial register number, hosting region) must be filled
- * in and a lawyer should sign off before this is relied on for a paying
- * product. Company details (name/address/email) are filled in as of v2. */
+ * This is NOT a substitute for legal review: the hosting region placeholder
+ * in section 5 still needs filling in, and a lawyer should sign off before
+ * this is relied on for a paying product. Company details (name/address/
+ * email/register number) are filled in as of v3. */
 
 export interface PolicySection {
   heading: string;
   body: string;
 }
 
-export const PRIVACY_POLICY_VERSION = 2;
+export const PRIVACY_POLICY_VERSION = 3;
 export const PRIVACY_POLICY_LAST_UPDATED = '2026-07-11';
 
 export const privacyPolicyDe: PolicySection[] = [
   {
     heading: '1. Verantwortlicher',
-    body: 'Smartordi OG, Steingasse 6A, Linz, Österreich\nE-Mail: team@smartordi.eu\nFirmenbuchnummer: [FN-Nummer]\n\nVerantwortlich für die Verarbeitung personenbezogener Daten im Rahmen der App "Brifo" im Sinne der Datenschutz-Grundverordnung (DSGVO) ist die oben genannte Gesellschaft.',
+    body: 'Smartordi OG, Steingasse 6A, Linz, Österreich\nE-Mail: team@smartordi.eu\nFirmenbuchnummer: FN 675586 i\n\nVerantwortlich für die Verarbeitung personenbezogener Daten im Rahmen der App "Brifo" im Sinne der Datenschutz-Grundverordnung (DSGVO) ist die oben genannte Gesellschaft.',
   },
   {
     heading: '2. Allgemeines',
@@ -51,7 +51,7 @@ export const privacyPolicyDe: PolicySection[] = [
 export const privacyPolicyAr: PolicySection[] = [
   {
     heading: '١. المسؤول عن حماية البيانات',
-    body: 'Smartordi OG، Steingasse 6A، Linz، النمسا\nالبريد الإلكتروني: team@smartordi.eu\nرقم السجل التجاري: [رقم السجل]\n\nالشركة المذكورة أعلاه هي المسؤولة عن معالجة البيانات الشخصية ضمن تطبيق "Brifo" وفق اللائحة الأوروبية العامة لحماية البيانات (GDPR).',
+    body: 'Smartordi OG، Steingasse 6A، Linz، النمسا\nالبريد الإلكتروني: team@smartordi.eu\nرقم السجل التجاري: FN 675586 i\n\nالشركة المذكورة أعلاه هي المسؤولة عن معالجة البيانات الشخصية ضمن تطبيق "Brifo" وفق اللائحة الأوروبية العامة لحماية البيانات (GDPR).',
   },
   {
     heading: '٢. عموميات',
