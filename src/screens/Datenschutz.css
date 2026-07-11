@@ -1,0 +1,26 @@
+.privacy-updated {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 2px 2px 16px;
+}
+
+.privacy-section {
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.privacy-section h3 {
+  font-size: 15px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.privacy-section p {
+  font-size: 14px;
+  color: var(--text);
+  white-space: pre-line;
+}
+
+.privacy-section p + p {
+  margin-top: 10px;
+}
