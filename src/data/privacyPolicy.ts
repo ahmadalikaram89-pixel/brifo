@@ -1,21 +1,22 @@
 /** Draft Datenschutzerklärung / سياسة الخصوصية — describes what Brifo actually
  * does technically (see DataContext, src/server/analyze.ts, src/server/push.ts).
- * This is NOT a substitute for legal review: the bracketed placeholders
- * (company name/address/email, hosting region) must be filled in and a
- * lawyer should sign off before this is relied on for a paying product. */
+ * This is NOT a substitute for legal review: the remaining bracketed
+ * placeholders (commercial register number, hosting region) must be filled
+ * in and a lawyer should sign off before this is relied on for a paying
+ * product. Company details (name/address/email) are filled in as of v2. */
 
 export interface PolicySection {
   heading: string;
   body: string;
 }
 
-export const PRIVACY_POLICY_VERSION = 1;
+export const PRIVACY_POLICY_VERSION = 2;
 export const PRIVACY_POLICY_LAST_UPDATED = '2026-07-11';
 
 export const privacyPolicyDe: PolicySection[] = [
   {
     heading: '1. Verantwortlicher',
-    body: '[Firmenname], [Adresse], [PLZ Ort], Österreich\nE-Mail: [E-Mail-Adresse]\nFirmenbuchnummer: [FN-Nummer]\n\nVerantwortlich für die Verarbeitung personenbezogener Daten im Rahmen der App "Brifo" im Sinne der Datenschutz-Grundverordnung (DSGVO) ist die oben genannte Gesellschaft.',
+    body: 'Smartordi OG, Steingasse 6A, Linz, Österreich\nE-Mail: team@smartordi.eu\nFirmenbuchnummer: [FN-Nummer]\n\nVerantwortlich für die Verarbeitung personenbezogener Daten im Rahmen der App "Brifo" im Sinne der Datenschutz-Grundverordnung (DSGVO) ist die oben genannte Gesellschaft.',
   },
   {
     heading: '2. Allgemeines',
@@ -43,14 +44,14 @@ export const privacyPolicyDe: PolicySection[] = [
   },
   {
     heading: '8. Kontakt',
-    body: 'Bei Fragen zum Datenschutz erreichen Sie uns unter: [E-Mail-Adresse]',
+    body: 'Bei Fragen zum Datenschutz erreichen Sie uns unter: team@smartordi.eu',
   },
 ];
 
 export const privacyPolicyAr: PolicySection[] = [
   {
     heading: '١. المسؤول عن حماية البيانات',
-    body: '[اسم الشركة]، [العنوان]، [الرمز البريدي والمدينة]، النمسا\nالبريد الإلكتروني: [البريد الإلكتروني]\nرقم السجل التجاري: [رقم السجل]\n\nالشركة المذكورة أعلاه هي المسؤولة عن معالجة البيانات الشخصية ضمن تطبيق "Brifo" وفق اللائحة الأوروبية العامة لحماية البيانات (GDPR).',
+    body: 'Smartordi OG، Steingasse 6A، Linz، النمسا\nالبريد الإلكتروني: team@smartordi.eu\nرقم السجل التجاري: [رقم السجل]\n\nالشركة المذكورة أعلاه هي المسؤولة عن معالجة البيانات الشخصية ضمن تطبيق "Brifo" وفق اللائحة الأوروبية العامة لحماية البيانات (GDPR).',
   },
   {
     heading: '٢. عموميات',
@@ -78,6 +79,6 @@ export const privacyPolicyAr: PolicySection[] = [
   },
   {
     heading: '٨. تواصل معنا',
-    body: 'لأي سؤال عن الخصوصية، تواصلي معنا عبر: [البريد الإلكتروني]',
+    body: 'لأي سؤال عن الخصوصية، تواصلي معنا عبر: team@smartordi.eu',
   },
 ];
