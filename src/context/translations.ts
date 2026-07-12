@@ -188,6 +188,17 @@ const ar = {
   backup_error_read: 'ما قدرنا نقرأ الملف',
   backup_error_format: 'هاد مش ملف نسخة احتياطية صحيح من Brifo',
 
+  cloud_backup_title: 'استرجاع تلقائي',
+  cloud_backup_subtitle:
+    'بياناتك تتخزن تلقائياً كل ما تتغيّر، مربوطة بالكود هذا. احفظيه بمكان آمن — إذا حذفتي التطبيق أو بدّلتي جهاز، دخّليه هون وبترجع بياناتك.',
+  cloud_backup_code_label: 'كود الاسترجاع تبعك',
+  cloud_backup_copy: 'نسخ الكود',
+  cloud_backup_copied: 'انسخ ✓',
+  cloud_backup_restore_label: 'عندك كود من قبل؟',
+  cloud_backup_code_placeholder: 'مثال: AB12-CD34-EF56',
+  cloud_backup_restore_button: 'استرجاع',
+  cloud_backup_restore_error: 'ما لقينا بيانات بهاد الكود. تأكدي إنك كتبتيه صح.',
+
   privacy_title: 'سياسة الخصوصية',
   privacy_last_updated: 'آخر تحديث:',
   privacy_gate_title: 'حدّثنا سياسة الخصوصية',
@@ -389,6 +400,17 @@ const de: Record<keyof typeof ar, string> = {
   backup_restore_done: 'Deine Daten wurden wiederhergestellt ✓',
   backup_error_read: 'Die Datei konnte nicht gelesen werden',
   backup_error_format: 'Das ist keine gültige Brifo-Sicherungsdatei',
+
+  cloud_backup_title: 'Automatische Wiederherstellung',
+  cloud_backup_subtitle:
+    'Deine Daten werden automatisch bei jeder Änderung gespeichert, verknüpft mit diesem Code. Bewahre ihn an einem sicheren Ort auf — falls du die App löschst oder das Gerät wechselst, gib ihn hier ein, um deine Daten zurückzubekommen.',
+  cloud_backup_code_label: 'Dein Wiederherstellungscode',
+  cloud_backup_copy: 'Code kopieren',
+  cloud_backup_copied: 'Kopiert ✓',
+  cloud_backup_restore_label: 'Hast du schon einen Code?',
+  cloud_backup_code_placeholder: 'z. B. AB12-CD34-EF56',
+  cloud_backup_restore_button: 'Wiederherstellen',
+  cloud_backup_restore_error: 'Keine Daten für diesen Code gefunden. Bitte überprüfe die Eingabe.',
 
   privacy_title: 'Datenschutzerklärung',
   privacy_last_updated: 'Zuletzt aktualisiert:',

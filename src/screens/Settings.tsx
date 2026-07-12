@@ -22,6 +22,7 @@ import {
   REMINDER_OFFSET_15MIN_BEFORE,
 } from '../lib/reminders';
 import { pushEnabled, subscribeToPush, unsubscribeFromPush, syncPushReminders, type SyncablePushEvent } from '../lib/push';
+import { getOrCreateRecoveryCode, formatCodeForDisplay, restoreFromCloud } from '../lib/cloudBackup';
 
 const OFFSET_OPTIONS = [
   { value: REMINDER_OFFSET_DAY_BEFORE, key: 'reminders_offset_day' as const },
@@ -60,6 +61,11 @@ export function Settings() {
   const [pendingRestore, setPendingRestore] = useState<RestorableState | null>(null);
   const [restoreError, setRestoreError] = useState<TranslationKey | null>(null);
   const [restoreDone, setRestoreDone] = useState(false);
+
+  const [recoveryCode] = useState(() => formatCodeForDisplay(getOrCreateRecoveryCode()));
+  const [codeCopied, setCodeCopied] = useState(false);
+  const [codeInput, setCodeInput] = useState('');
+  const [codeRestoreError, setCodeRestoreError] = useState(false);
 
   // Restoring a backup replaces `rating` out from under this component's own
   // once-initialized star/comment state — resync whenever it changes.
@@ -132,6 +138,24 @@ export function Settings() {
     restoreBackup(pendingRestore);
     setPendingRestore(null);
     setRestoreDone(true);
+  }
+
+  async function handleCopyRecoveryCode() {
+    await navigator.clipboard.writeText(recoveryCode);
+    setCodeCopied(true);
+    setTimeout(() => setCodeCopied(false), 2000);
+  }
+
+  async function handleRestoreByCode() {
+    setCodeRestoreError(false);
+    setRestoreDone(false);
+    const data = await restoreFromCloud(codeInput);
+    if (!data) {
+      setCodeRestoreError(true);
+      return;
+    }
+    setPendingRestore(data);
+    setCodeInput('');
   }
 
   return (
@@ -279,6 +303,59 @@ export function Settings() {
             </div>
           </div>
         )}
+      </div>
+
+      <div className="sec">
+        <h3>{t('cloud_backup_title')}</h3>
+      </div>
+      <div className="card" style={{ padding: '16px' }}>
+        <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 14 }}>{t('cloud_backup_subtitle')}</p>
+        <p style={{ fontSize: 12.5, fontWeight: 700, marginBottom: 6 }}>{t('cloud_backup_code_label')}</p>
+        <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+          <p
+            style={{
+              flex: 1,
+              fontSize: 16,
+              fontWeight: 800,
+              letterSpacing: 1,
+              fontFamily: 'monospace',
+              padding: '10px 14px',
+              borderRadius: 14,
+              border: '1px solid var(--card-border)',
+              background: 'var(--card)',
+            }}
+          >
+            {recoveryCode}
+          </p>
+          <button className="scan-btn" onClick={handleCopyRecoveryCode}>
+            {codeCopied ? t('cloud_backup_copied') : t('cloud_backup_copy')}
+          </button>
+        </div>
+
+        <div style={{ marginTop: 14, paddingTop: 14, borderTop: '1px solid var(--card-border)' }}>
+          <p style={{ fontSize: 13, fontWeight: 700, marginBottom: 10 }}>{t('cloud_backup_restore_label')}</p>
+          <div style={{ display: 'flex', gap: 10 }}>
+            <input
+              type="text"
+              value={codeInput}
+              onChange={(e) => setCodeInput(e.target.value)}
+              placeholder={t('cloud_backup_code_placeholder')}
+              style={{
+                flex: 1,
+                padding: '10px 14px',
+                borderRadius: 14,
+                border: '1px solid var(--card-border)',
+                background: 'var(--card)',
+                color: 'var(--text)',
+                fontSize: 14,
+              }}
+            />
+            <button className="scan-btn primary" onClick={handleRestoreByCode} disabled={!codeInput.trim()}>
+              {t('cloud_backup_restore_button')}
+            </button>
+          </div>
+          {codeRestoreError && <p style={{ fontSize: 12.5, color: 'var(--red)', marginTop: 8 }}>{t('cloud_backup_restore_error')}</p>}
+        </div>
       </div>
 
       <div className="sec">
