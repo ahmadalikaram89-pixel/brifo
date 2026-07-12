@@ -117,6 +117,29 @@ function apiDevMiddleware(): Plugin {
         }),
       )
 
+      server.middlewares.use(
+        '/api/backup-sync',
+        jsonPostRoute(async (body) => {
+          const { saveCloudBackup, isValidRecoveryCode } = await import('./src/server/backup.ts')
+          const { code, data } = (body ?? {}) as { code?: unknown; data?: unknown }
+          if (!isValidRecoveryCode(code) || !data || typeof data !== 'object') return { status: 400, body: { error: 'invalid request' } }
+          await saveCloudBackup(code, data)
+          return { status: 200, body: { ok: true } }
+        }),
+      )
+
+      server.middlewares.use(
+        '/api/backup-restore',
+        jsonPostRoute(async (body) => {
+          const { loadCloudBackup, isValidRecoveryCode } = await import('./src/server/backup.ts')
+          const { code } = (body ?? {}) as { code?: unknown }
+          if (!isValidRecoveryCode(code)) return { status: 400, body: { error: 'invalid request' } }
+          const backup = await loadCloudBackup(code)
+          if (!backup) return { status: 404, body: { error: 'not found' } }
+          return { status: 200, body: backup }
+        }),
+      )
+
       server.middlewares.use('/api/cron/send-reminders', async (_req, res) => {
         const { runDueReminders } = await import('./src/server/push.ts')
         res.setHeader('Content-Type', 'application/json')

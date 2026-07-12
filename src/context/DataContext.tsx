@@ -12,6 +12,7 @@ import {
 } from '../types/data';
 import type { LetterAnalysis } from '../types/analysis';
 import type { RestorableState } from '../lib/backup';
+import { syncToCloud } from '../lib/cloudBackup';
 
 const STORAGE_KEY = 'brifo_data';
 
@@ -115,6 +116,12 @@ export function DataProvider({ children: reactChildren }: { children: ReactNode 
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }, [state]);
+
+  // Debounced so rapid edits (e.g. typing) don't fire a request per keystroke.
+  useEffect(() => {
+    const timeout = setTimeout(() => syncToCloud(state), 800);
+    return () => clearTimeout(timeout);
   }, [state]);
 
   function addChild(input: NewChildInput): Child {
