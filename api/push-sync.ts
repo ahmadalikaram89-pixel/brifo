@@ -1,5 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import { syncReminders, type ReminderEvent } from '../src/server/push';
+import { syncReminders, type ReminderEvent } from '../src/server/push.js';
 
 interface VercelRequest extends IncomingMessage {
   body?: unknown;

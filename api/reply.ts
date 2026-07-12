@@ -1,6 +1,6 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import { generateReplyLetter, ReplyError } from '../src/server/reply';
-import { ConfigError } from '../src/server/analyze';
+import { generateReplyLetter, ReplyError } from '../src/server/reply.js';
+import { ConfigError } from '../src/server/analyze.js';
 
 interface VercelRequest extends IncomingMessage {
   body?: unknown;

@@ -4,11 +4,9 @@
     "target": "es2023",
     "lib": ["ES2023"],
     "types": ["node"],
-    "module": "esnext",
-    "moduleResolution": "bundler",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "skipLibCheck": true,
-    "allowImportingTsExtensions": true,
-    "verbatimModuleSyntax": true,
     "moduleDetection": "force",
     "noEmit": true,
 
