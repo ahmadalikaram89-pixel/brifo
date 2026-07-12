@@ -1,6 +1,6 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { getVapidPublicKey } from '../src/server/push';
-import { ConfigError } from '../src/server/analyze';
+import { ConfigError } from '../src/server/errors';
 
 interface VercelRequest extends IncomingMessage {}
 

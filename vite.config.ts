@@ -70,12 +70,11 @@ function apiDevMiddleware(): Plugin {
           return
         }
         const { getVapidPublicKey } = await import('./src/server/push.ts')
-        const { ConfigError } = await import('./src/server/analyze.ts')
         res.setHeader('Content-Type', 'application/json')
         try {
           res.end(JSON.stringify({ publicKey: getVapidPublicKey() }))
         } catch (err) {
-          res.statusCode = err instanceof ConfigError ? 500 : 500
+          res.statusCode = 500
           res.end(JSON.stringify({ error: err instanceof Error ? err.message : 'unexpected error' }))
         }
       })

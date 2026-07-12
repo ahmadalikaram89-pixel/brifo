@@ -1,12 +1,9 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { z } from 'zod';
 import { toStructuredOutputFormat } from './structuredOutput.js';
+import { ConfigError } from './errors.js';
 
-/** Thrown for server misconfiguration (e.g. missing API key), as opposed to
- * AnalyzeError which signals bad/invalid request input. Kept distinct so the
- * API route can tell "key missing" apart from "model/network failure" instead
- * of collapsing everything into one generic 500. */
-export class ConfigError extends Error {}
+export { ConfigError };
 
 let client: Anthropic | null = null;
 

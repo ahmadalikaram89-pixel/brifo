@@ -1,5 +1,5 @@
 import webpush from 'web-push';
-import { ConfigError } from './analyze.js';
+import { ConfigError } from './errors.js';
 import { kvGet, kvSet, kvDel, kvSadd, kvSrem, kvSmembers, kvMarkSentOnce } from './kv.js';
 
 const DEVICES_SET = 'push:devices';
