@@ -23,6 +23,7 @@ import {
 } from '../lib/reminders';
 import { pushEnabled, subscribeToPush, unsubscribeFromPush, syncPushReminders, type SyncablePushEvent } from '../lib/push';
 import { getOrCreateRecoveryCode, formatCodeForDisplay, restoreFromCloud } from '../lib/cloudBackup';
+import { submitRatingToServer } from '../lib/ratings';
 
 const OFFSET_OPTIONS = [
   { value: REMINDER_OFFSET_DAY_BEFORE, key: 'reminders_offset_day' as const },
@@ -107,12 +108,14 @@ export function Settings() {
   function handleRate(next: number) {
     setStars(next);
     submitRating(next, comment);
+    submitRatingToServer(next, comment, lang);
     setRatingSaved(true);
   }
 
   function handleCommentBlur() {
     if (stars === 0) return;
     submitRating(stars, comment);
+    submitRatingToServer(stars, comment, lang);
     setRatingSaved(true);
   }
 

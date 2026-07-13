@@ -199,6 +199,13 @@ const ar = {
   cloud_backup_restore_button: 'استرجاع',
   cloud_backup_restore_error: 'ما لقينا بيانات بهاد الكود. تأكدي إنك كتبتيه صح.',
 
+  screen_admin: 'تقييمات المستخدمين',
+  admin_password_placeholder: 'كلمة السر',
+  admin_fetch_button: 'عرض التقييمات',
+  admin_unauthorized: 'كلمة السر غلط',
+  admin_empty: 'ما في تقييمات لسا',
+  admin_average_label: 'المعدل: {avg} من 5 ({count} تقييم)',
+
   privacy_title: 'سياسة الخصوصية',
   privacy_last_updated: 'آخر تحديث:',
   privacy_gate_title: 'حدّثنا سياسة الخصوصية',
@@ -411,6 +418,13 @@ const de: Record<keyof typeof ar, string> = {
   cloud_backup_code_placeholder: 'z. B. AB12-CD34-EF56',
   cloud_backup_restore_button: 'Wiederherstellen',
   cloud_backup_restore_error: 'Keine Daten für diesen Code gefunden. Bitte überprüfe die Eingabe.',
+
+  screen_admin: 'Nutzerbewertungen',
+  admin_password_placeholder: 'Passwort',
+  admin_fetch_button: 'Bewertungen anzeigen',
+  admin_unauthorized: 'Falsches Passwort',
+  admin_empty: 'Noch keine Bewertungen',
+  admin_average_label: 'Durchschnitt: {avg} von 5 ({count} Bewertungen)',
 
   privacy_title: 'Datenschutzerklärung',
   privacy_last_updated: 'Zuletzt aktualisiert:',
