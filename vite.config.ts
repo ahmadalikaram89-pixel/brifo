@@ -140,6 +140,31 @@ function apiDevMiddleware(): Plugin {
         }),
       )
 
+      server.middlewares.use(
+        '/api/rating-submit',
+        jsonPostRoute(async (body) => {
+          const { submitRating } = await import('./src/server/ratings.ts')
+          const { stars, comment, lang } = (body ?? {}) as { stars?: unknown; comment?: unknown; lang?: unknown }
+          if (typeof stars !== 'number' || !Number.isInteger(stars) || stars < 1 || stars > 5) {
+            return { status: 400, body: { error: 'invalid stars' } }
+          }
+          await submitRating(stars, typeof comment === 'string' ? comment : '', lang === 'de' ? 'de' : 'ar')
+          return { status: 200, body: { ok: true } }
+        }),
+      )
+
+      server.middlewares.use(
+        '/api/admin/ratings',
+        jsonPostRoute(async (body) => {
+          const { listRatings } = await import('./src/server/ratings.ts')
+          const { secret } = (body ?? {}) as { secret?: unknown }
+          const expected = process.env.ADMIN_SECRET
+          if (expected && secret !== expected) return { status: 401, body: { error: 'unauthorized' } }
+          const ratings = await listRatings()
+          return { status: 200, body: { ratings } }
+        }),
+      )
+
       server.middlewares.use('/api/cron/send-reminders', async (_req, res) => {
         const { runDueReminders } = await import('./src/server/push.ts')
         res.setHeader('Content-Type', 'application/json')
@@ -166,6 +191,7 @@ export default defineConfig(({ mode }) => {
     'KV_REST_API_URL',
     'KV_REST_API_TOKEN',
     'CRON_SECRET',
+    'ADMIN_SECRET',
   ]
   for (const key of passthroughEnvVars) {
     // Assigning `undefined` to process.env[key] would coerce it to the

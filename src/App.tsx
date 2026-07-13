@@ -16,6 +16,7 @@ import { Todo } from './screens/Todo';
 import { Datenschutz } from './screens/Datenschutz';
 import { Impressum } from './screens/Impressum';
 import { AGB } from './screens/AGB';
+import { Admin } from './screens/Admin';
 import { PrivacyConsentGate } from './components/PrivacyConsentGate';
 import { useLanguage } from './context/LanguageContext';
 import { useData } from './context/DataContext';
@@ -57,6 +58,7 @@ function App() {
       <Route path="/datenschutz" element={<Datenschutz />} />
       <Route path="/impressum" element={<Impressum />} />
       <Route path="/agb" element={<AGB />} />
+      <Route path="/admin" element={<Admin />} />
     </Routes>
   );
 }
