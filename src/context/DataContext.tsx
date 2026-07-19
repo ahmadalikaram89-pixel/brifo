@@ -99,6 +99,7 @@ interface DataContextValue {
   addLetter: (childId: string, analysis: LetterAnalysis) => StoredLetter;
   markPaymentPaid: (paymentId: string, paid: boolean) => void;
   addManualEvent: (childId: string, title: string, date: string) => CalendarEvent;
+  deleteEvent: (eventId: string) => void;
   lettersForChild: (childId: string) => StoredLetter[];
   paymentsForChild: (childId: string) => Payment[];
   eventsForChild: (childId: string) => CalendarEvent[];
@@ -206,6 +207,10 @@ export function DataProvider({ children: reactChildren }: { children: ReactNode 
     }));
   }
 
+  function deleteEvent(eventId: string) {
+    setState((prev) => ({ ...prev, events: prev.events.filter((e) => e.id !== eventId) }));
+  }
+
   function addManualEvent(childId: string, title: string, date: string): CalendarEvent {
     const event: CalendarEvent = {
       id: makeId(),
@@ -290,6 +295,7 @@ export function DataProvider({ children: reactChildren }: { children: ReactNode 
         addLetter,
         markPaymentPaid,
         addManualEvent,
+        deleteEvent,
         lettersForChild,
         paymentsForChild,
         eventsForChild,

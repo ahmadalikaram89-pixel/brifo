@@ -133,6 +133,8 @@ const ar = {
   calendar_source_letter: 'من رسالة',
   calendar_source_payment: 'دفعة',
   calendar_source_manual: 'موعد شخصي',
+  calendar_expired_title: 'مواعيد منتهية',
+  calendar_delete_event: 'حذف الموعد',
 
   notifications_label: 'الإشعارات',
 
@@ -353,6 +355,8 @@ const de: Record<keyof typeof ar, string> = {
   calendar_source_letter: 'Aus Brief',
   calendar_source_payment: 'Zahlung',
   calendar_source_manual: 'Persönlicher Termin',
+  calendar_expired_title: 'Abgelaufene Termine',
+  calendar_delete_event: 'Termin löschen',
 
   notifications_label: 'Benachrichtigungen',
 

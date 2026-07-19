@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { CalendarX2 } from 'lucide-react';
+import { CalendarX2, Trash2 } from 'lucide-react';
 import { TabLayout } from '../components/TabLayout';
 import { Header } from '../components/Header';
 import { AddToCalendarButton } from '../components/AddToCalendarButton';
 import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';
-import { ALL_CHILDREN } from '../types/data';
+import { ALL_CHILDREN, type CalendarEvent } from '../types/data';
 import { isolateBidiRuns } from '../lib/bidiText';
 import { colorsForChildId, dotBackground } from '../lib/childColors';
 import './Calendar.css';
@@ -18,7 +18,7 @@ const SOURCE_LABEL_KEY = {
 
 export function Calendar() {
   const { t } = useLanguage();
-  const { children, events, addManualEvent } = useData();
+  const { children, events, addManualEvent, deleteEvent } = useData();
 
   const [showForm, setShowForm] = useState(false);
   const [title, setTitle] = useState('');
@@ -30,9 +30,36 @@ export function Calendar() {
     .filter((e) => e.date >= today)
     .slice()
     .sort((a, b) => a.date.localeCompare(b.date));
+  const expired = events
+    .filter((e) => e.date < today)
+    .slice()
+    .sort((a, b) => b.date.localeCompare(a.date));
 
   function childFor(id: string) {
     return children.find((c) => c.id === id);
+  }
+
+  function renderRow(e: CalendarEvent) {
+    const child = childFor(e.childId);
+    return (
+      <div className="card calendar-row" key={e.id}>
+        <span className="calendar-dot" style={{ background: dotBackground(colorsForChildId(e.childId, children)) }} />
+        <div className="calendar-info">
+          <h4>{isolateBidiRuns(e.title)}</h4>
+          <p>
+            <span className="nums">{e.date}</span> ·{' '}
+            {isolateBidiRuns(
+              child ? (child.schoolClass ? `${child.name} (${child.schoolClass})` : child.name) : t('assign_all_children'),
+            )}
+          </p>
+        </div>
+        <span className="calendar-source">{t(SOURCE_LABEL_KEY[e.source])}</span>
+        <AddToCalendarButton title={e.title} date={e.date} compact />
+        <button className="calendar-delete" onClick={() => deleteEvent(e.id)} aria-label={t('calendar_delete_event')}>
+          <Trash2 size={16} strokeWidth={2} />
+        </button>
+      </div>
+    );
   }
 
   function submit() {
@@ -92,27 +119,16 @@ export function Calendar() {
           <p>{t('calendar_no_events')}</p>
         </div>
       ) : (
-        <div className="calendar-list">
-          {upcoming.map((e) => {
-            const child = childFor(e.childId);
-            return (
-              <div className="card calendar-row" key={e.id}>
-                <span className="calendar-dot" style={{ background: dotBackground(colorsForChildId(e.childId, children)) }} />
-                <div className="calendar-info">
-                  <h4>{isolateBidiRuns(e.title)}</h4>
-                  <p>
-                    <span className="nums">{e.date}</span> ·{' '}
-                    {isolateBidiRuns(
-                      child ? (child.schoolClass ? `${child.name} (${child.schoolClass})` : child.name) : t('assign_all_children'),
-                    )}
-                  </p>
-                </div>
-                <span className="calendar-source">{t(SOURCE_LABEL_KEY[e.source])}</span>
-                <AddToCalendarButton title={e.title} date={e.date} compact />
-              </div>
-            );
-          })}
-        </div>
+        <div className="calendar-list">{upcoming.map(renderRow)}</div>
+      )}
+
+      {expired.length > 0 && (
+        <>
+          <div className="sec">
+            <h3>{t('calendar_expired_title')}</h3>
+          </div>
+          <div className="calendar-list">{expired.map(renderRow)}</div>
+        </>
       )}
     </TabLayout>
   );
