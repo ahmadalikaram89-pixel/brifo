@@ -69,6 +69,7 @@
   border-radius: 99px;
 }
 
+.calendar-edit,
 .calendar-delete {
   width: 30px;
   height: 30px;

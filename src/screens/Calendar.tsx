@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CalendarX2, Trash2 } from 'lucide-react';
+import { CalendarX2, Pencil, Trash2 } from 'lucide-react';
 import { TabLayout } from '../components/TabLayout';
 import { Header } from '../components/Header';
 import { AddToCalendarButton } from '../components/AddToCalendarButton';
@@ -18,9 +18,10 @@ const SOURCE_LABEL_KEY = {
 
 export function Calendar() {
   const { t } = useLanguage();
-  const { children, events, addManualEvent, deleteEvent } = useData();
+  const { children, events, addManualEvent, updateEvent, deleteEvent } = useData();
 
   const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [title, setTitle] = useState('');
   const [date, setDate] = useState('');
   const [childId, setChildId] = useState<string>(ALL_CHILDREN);
@@ -55,6 +56,9 @@ export function Calendar() {
         </div>
         <span className="calendar-source">{t(SOURCE_LABEL_KEY[e.source])}</span>
         <AddToCalendarButton title={e.title} date={e.date} compact />
+        <button className="calendar-edit" onClick={() => startEdit(e)} aria-label={t('calendar_edit_event')}>
+          <Pencil size={16} strokeWidth={2} />
+        </button>
         <button className="calendar-delete" onClick={() => deleteEvent(e.id)} aria-label={t('calendar_delete_event')}>
           <Trash2 size={16} strokeWidth={2} />
         </button>
@@ -62,13 +66,30 @@ export function Calendar() {
     );
   }
 
-  function submit() {
-    if (!title.trim() || !date) return;
-    addManualEvent(childId, title.trim(), date);
+  function startEdit(e: CalendarEvent) {
+    setEditingId(e.id);
+    setTitle(e.title);
+    setDate(e.date);
+    setChildId(e.childId);
+    setShowForm(true);
+  }
+
+  function resetForm() {
+    setEditingId(null);
     setTitle('');
     setDate('');
     setChildId(ALL_CHILDREN);
     setShowForm(false);
+  }
+
+  function submit() {
+    if (!title.trim() || !date) return;
+    if (editingId) {
+      updateEvent(editingId, { childId, title: title.trim(), date });
+    } else {
+      addManualEvent(childId, title.trim(), date);
+    }
+    resetForm();
   }
 
   return (
@@ -76,7 +97,7 @@ export function Calendar() {
       <Header />
       <div className="sec">
         <h3>{t('screen_calendar')}</h3>
-        <a onClick={() => setShowForm((v) => !v)}>{t('calendar_add_event')}</a>
+        <a onClick={() => (showForm ? resetForm() : setShowForm(true))}>{t('calendar_add_event')}</a>
       </div>
 
       {showForm && (
@@ -101,7 +122,7 @@ export function Calendar() {
             </select>
           </div>
           <div className="event-form-actions">
-            <button className="scan-btn" onClick={() => setShowForm(false)}>
+            <button className="scan-btn" onClick={resetForm}>
               {t('cancel')}
             </button>
             <button className="scan-btn primary" onClick={submit}>
