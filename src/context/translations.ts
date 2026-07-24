@@ -220,6 +220,15 @@ const ar = {
   settings_agb_link: 'شروط الاستخدام',
   impressum_title: 'بيان الهوية القانونية',
   settings_impressum_link: 'بيان الهوية القانونية (Impressum)',
+
+  paywall_plan_name: 'Brifo Premium',
+  paywall_price: '1.90 €',
+  paywall_price_period: 'بالشهر',
+  paywall_features_note: 'رح نحدد الميزات المدفوعة بالتفصيل قريباً — هاي معاينة أولية للاشتراك.',
+  paywall_consent_label: 'موافق/ة إنه الاشتراك يبلش فوراً، وفاهم/ة إنه بهيك بفقد حقي بالرجوع خلال 14 يوم (حسب المادة 4 من شروط الاستخدام).',
+  paywall_consent_link: 'اقرأ شروط الاستخدام',
+  paywall_subscribe_button: 'اشترك الآن',
+  paywall_not_ready_note: 'وسيلة الدفع الفعلية لسا قيد الإعداد — رح تنفعّل قريباً، وما رح ينسحب أي مبلغ لحد هلق.',
 } as const;
 
 const de: Record<keyof typeof ar, string> = {
@@ -442,6 +451,15 @@ const de: Record<keyof typeof ar, string> = {
   settings_agb_link: 'Allgemeine Geschäftsbedingungen (AGB)',
   impressum_title: 'Impressum',
   settings_impressum_link: 'Impressum',
+
+  paywall_plan_name: 'Brifo Premium',
+  paywall_price: '1,90 €',
+  paywall_price_period: 'pro Monat',
+  paywall_features_note: 'Die genauen Premium-Funktionen legen wir demnächst fest — dies ist eine erste Vorschau des Abos.',
+  paywall_consent_label: 'Ich stimme zu, dass die Leistung sofort beginnt, und weiß, dass ich dadurch mein 14-tägiges Widerrufsrecht verliere (gemäß §4 der AGB).',
+  paywall_consent_link: 'AGB lesen',
+  paywall_subscribe_button: 'Jetzt abonnieren',
+  paywall_not_ready_note: 'Die eigentliche Zahlungsabwicklung ist noch in Vorbereitung und wird bald aktiviert — es wird noch kein Betrag abgebucht.',
 };
 
 export const translations = { ar, de };
