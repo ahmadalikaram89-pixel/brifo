@@ -3,7 +3,7 @@
  * survive the device losing its own storage entirely (e.g. deleting the iOS
  * home-screen icon, which wipes the isolated storage container that a
  * device id would otherwise live in). */
-import type { RestorableState } from './backup';
+import { normalizeState, type RestorableState } from './backup';
 
 const RECOVERY_CODE_KEY = 'brifo_recovery_code';
 // No 0/O/1/I/L — avoids characters that are easy to confuse when copied by hand.
@@ -52,6 +52,20 @@ export async function syncToCloud(state: RestorableState): Promise<void> {
  * the fresh one this device would otherwise have generated for itself. */
 export async function restoreFromCloud(codeInput: string): Promise<RestorableState | null> {
   const code = normalizeCodeInput(codeInput);
+  const data = await fetchBackupForCode(code);
+  if (!data) return null;
+  localStorage.setItem(RECOVERY_CODE_KEY, code);
+  return data;
+}
+
+/** Pulls this device's own cloud slot without adopting anything — used to
+ * periodically catch up on edits made from another device sharing the same
+ * recovery code (see DataContext's pull-and-merge effect). */
+export async function fetchCloudBackup(): Promise<RestorableState | null> {
+  return fetchBackupForCode(getOrCreateRecoveryCode());
+}
+
+async function fetchBackupForCode(code: string): Promise<RestorableState | null> {
   try {
     const res = await fetch('/api/backup-restore', {
       method: 'POST',
@@ -59,12 +73,11 @@ export async function restoreFromCloud(codeInput: string): Promise<RestorableSta
       body: JSON.stringify({ code }),
     });
     if (!res.ok) return null;
-    const payload = (await res.json()) as { data?: RestorableState };
+    const payload = (await res.json()) as { data?: Record<string, unknown> };
     if (!payload.data) return null;
-    localStorage.setItem(RECOVERY_CODE_KEY, code);
-    return payload.data;
+    return normalizeState(payload.data);
   } catch (err) {
-    console.error('[cloudBackup] restore failed:', err);
+    console.error('[cloudBackup] fetch failed:', err);
     return null;
   }
 }

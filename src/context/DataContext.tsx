@@ -10,41 +10,25 @@ import {
   type LetterPhoto,
   type TodoItem,
   type AppRating,
+  type Tombstone,
 } from '../types/data';
 import type { LetterAnalysis } from '../types/analysis';
-import type { RestorableState } from '../lib/backup';
-import { syncToCloud } from '../lib/cloudBackup';
+import { normalizeState, type RestorableState } from '../lib/backup';
+import { syncToCloud, fetchCloudBackup } from '../lib/cloudBackup';
+import { mergeStoredState } from '../lib/mergeState';
 
 const STORAGE_KEY = 'brifo_data';
+const EMPTY_STATE: RestorableState = { children: [], letters: [], payments: [], events: [], todos: [], rating: null, tombstones: [] };
 
-interface StoredState {
-  children: Child[];
-  letters: StoredLetter[];
-  payments: Payment[];
-  events: CalendarEvent[];
-  todos: TodoItem[];
-  rating: AppRating | null;
-}
+type StoredState = RestorableState;
 
 function loadInitialState(): StoredState {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return { children: [], letters: [], payments: [], events: [], todos: [], rating: null };
-    const parsed = JSON.parse(raw);
-    return {
-      // Profiles saved before family members existed have no `type` — treat them as children.
-      children: (parsed.children ?? []).map((c: Omit<Child, 'type'> & { type?: FamilyMemberType }) => ({
-        ...c,
-        type: c.type ?? 'child',
-      })),
-      letters: parsed.letters ?? [],
-      payments: parsed.payments ?? [],
-      events: parsed.events ?? [],
-      todos: parsed.todos ?? [],
-      rating: parsed.rating ?? null,
-    };
+    if (!raw) return EMPTY_STATE;
+    return normalizeState(JSON.parse(raw));
   } catch {
-    return { children: [], letters: [], payments: [], events: [], todos: [], rating: null };
+    return EMPTY_STATE;
   }
 }
 
@@ -95,6 +79,7 @@ interface DataContextValue {
   events: CalendarEvent[];
   todos: TodoItem[];
   rating: AppRating | null;
+  tombstones: Tombstone[];
   addChild: (input: NewChildInput) => Child;
   deleteChild: (childId: string) => void;
   addLetter: (childId: string, analysis: LetterAnalysis, photo?: LetterPhoto) => StoredLetter;
@@ -132,6 +117,39 @@ export function DataProvider({ children: reactChildren }: { children: ReactNode 
     return () => clearTimeout(timeout);
   }, [state]);
 
+  // Two devices (e.g. both parents) can share one recovery code, so this
+  // device's own edits alone aren't the whole picture — periodically pull the
+  // cloud copy and reconcile it with local state (see lib/mergeState) instead
+  // of only ever pushing. Runs on mount, on an interval, and whenever the app
+  // regains visibility (the realistic moment to catch up: reopening after the
+  // other parent made changes).
+  useEffect(() => {
+    let cancelled = false;
+
+    async function pullAndMerge() {
+      const remote = await fetchCloudBackup();
+      if (cancelled || !remote) return;
+      setState((prev) => {
+        const merged = mergeStoredState(prev, remote);
+        return JSON.stringify(merged) === JSON.stringify(prev) ? prev : merged;
+      });
+    }
+
+    function handleVisibility() {
+      if (document.visibilityState === 'visible') pullAndMerge();
+    }
+
+    pullAndMerge();
+    const interval = setInterval(pullAndMerge, 45_000);
+    document.addEventListener('visibilitychange', handleVisibility);
+
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+      document.removeEventListener('visibilitychange', handleVisibility);
+    };
+  }, []);
+
   function addChild(input: NewChildInput): Child {
     const child: Child = {
       id: makeId(),
@@ -148,22 +166,37 @@ export function DataProvider({ children: reactChildren }: { children: ReactNode 
     return child;
   }
 
+  function tombstone(id: string): Tombstone {
+    return { id, deletedAt: new Date().toISOString() };
+  }
+
   function deleteChild(childId: string) {
-    setState((prev) => ({
-      ...prev,
-      children: prev.children.filter((c) => c.id !== childId),
-      letters: prev.letters.filter((l) => l.childId !== childId),
-      payments: prev.payments.filter((p) => p.childId !== childId),
-      events: prev.events.filter((e) => e.childId !== childId),
-      todos: prev.todos.filter((item) => item.childId !== childId),
-    }));
+    setState((prev) => {
+      const cascadedIds = [
+        childId,
+        ...prev.letters.filter((l) => l.childId === childId).map((l) => l.id),
+        ...prev.payments.filter((p) => p.childId === childId).map((p) => p.id),
+        ...prev.events.filter((e) => e.childId === childId).map((e) => e.id),
+        ...prev.todos.filter((item) => item.childId === childId).map((item) => item.id),
+      ];
+      return {
+        ...prev,
+        children: prev.children.filter((c) => c.id !== childId),
+        letters: prev.letters.filter((l) => l.childId !== childId),
+        payments: prev.payments.filter((p) => p.childId !== childId),
+        events: prev.events.filter((e) => e.childId !== childId),
+        todos: prev.todos.filter((item) => item.childId !== childId),
+        tombstones: [...prev.tombstones, ...cascadedIds.map(tombstone)],
+      };
+    });
   }
 
   function addLetter(childId: string, analysis: LetterAnalysis, photo?: LetterPhoto): StoredLetter {
+    const now = new Date().toISOString();
     const letter: StoredLetter = {
       id: makeId(),
       childId,
-      createdAt: new Date().toISOString(),
+      createdAt: now,
       analysis,
       photo,
     };
@@ -177,7 +210,8 @@ export function DataProvider({ children: reactChildren }: { children: ReactNode 
       dueDate: p.due_date,
       paid: false,
       letterId: letter.id,
-      createdAt: new Date().toISOString(),
+      createdAt: now,
+      updatedAt: now,
     }));
 
     const deadlineEvents: CalendarEvent[] = analysis.deadlines.map((d) => ({
@@ -186,7 +220,8 @@ export function DataProvider({ children: reactChildren }: { children: ReactNode 
       title: d.what,
       date: d.date,
       source: 'letter',
-      createdAt: new Date().toISOString(),
+      createdAt: now,
+      updatedAt: now,
     }));
 
     const paymentEvents: CalendarEvent[] = newPayments.map((p) => ({
@@ -195,7 +230,8 @@ export function DataProvider({ children: reactChildren }: { children: ReactNode 
       title: p.reason,
       date: p.dueDate,
       source: 'payment',
-      createdAt: new Date().toISOString(),
+      createdAt: now,
+      updatedAt: now,
     }));
 
     setState((prev) => ({
@@ -211,41 +247,49 @@ export function DataProvider({ children: reactChildren }: { children: ReactNode 
   function markPaymentPaid(paymentId: string, paid: boolean) {
     setState((prev) => ({
       ...prev,
-      payments: prev.payments.map((p) => (p.id === paymentId ? { ...p, paid } : p)),
+      payments: prev.payments.map((p) => (p.id === paymentId ? { ...p, paid, updatedAt: new Date().toISOString() } : p)),
     }));
   }
 
   function deleteEvent(eventId: string) {
-    setState((prev) => ({ ...prev, events: prev.events.filter((e) => e.id !== eventId) }));
+    setState((prev) => ({
+      ...prev,
+      events: prev.events.filter((e) => e.id !== eventId),
+      tombstones: [...prev.tombstones, tombstone(eventId)],
+    }));
   }
 
   function updateEvent(eventId: string, updates: { childId: string; title: string; date: string }) {
     setState((prev) => ({
       ...prev,
-      events: prev.events.map((e) => (e.id === eventId ? { ...e, ...updates } : e)),
+      events: prev.events.map((e) => (e.id === eventId ? { ...e, ...updates, updatedAt: new Date().toISOString() } : e)),
     }));
   }
 
   function addManualEvent(childId: string, title: string, date: string): CalendarEvent {
+    const now = new Date().toISOString();
     const event: CalendarEvent = {
       id: makeId(),
       childId,
       title,
       date,
       source: 'manual',
-      createdAt: new Date().toISOString(),
+      createdAt: now,
+      updatedAt: now,
     };
     setState((prev) => ({ ...prev, events: [...prev.events, event] }));
     return event;
   }
 
   function addTodo(childId: string, title: string, dueDate?: string): TodoItem {
+    const now = new Date().toISOString();
     const todo: TodoItem = {
       id: makeId(),
       childId,
       title,
       done: false,
-      createdAt: new Date().toISOString(),
+      createdAt: now,
+      updatedAt: now,
       dueDate,
     };
     setState((prev) => ({ ...prev, todos: [...prev.todos, todo] }));
@@ -257,29 +301,34 @@ export function DataProvider({ children: reactChildren }: { children: ReactNode 
       ...prev,
       todos: prev.todos.map((item) =>
         item.id === todoId
-          ? { ...item, done: !item.done, completedAt: !item.done ? new Date().toISOString() : undefined }
+          ? {
+              ...item,
+              done: !item.done,
+              completedAt: !item.done ? new Date().toISOString() : undefined,
+              updatedAt: new Date().toISOString(),
+            }
           : item,
       ),
     }));
   }
 
   function deleteTodo(todoId: string) {
-    setState((prev) => ({ ...prev, todos: prev.todos.filter((item) => item.id !== todoId) }));
+    setState((prev) => ({
+      ...prev,
+      todos: prev.todos.filter((item) => item.id !== todoId),
+      tombstones: [...prev.tombstones, tombstone(todoId)],
+    }));
   }
 
   function submitRating(stars: number, comment: string) {
     setState((prev) => ({ ...prev, rating: { stars, comment, updatedAt: new Date().toISOString() } }));
   }
 
+  // An explicit, user-confirmed restore (from a JSON file or a cloud recovery
+  // code) replaces state outright rather than merging — `data` is already
+  // normalized (see lib/backup's normalizeState), so this is a plain adopt.
   function restoreBackup(data: RestorableState) {
-    setState({
-      children: data.children.map((c) => ({ ...c, type: c.type ?? 'child' })),
-      letters: data.letters,
-      payments: data.payments,
-      events: data.events,
-      todos: data.todos,
-      rating: data.rating,
-    });
+    setState(data);
   }
 
   // A parent ("adult" member) manages the whole family, not just their own
@@ -306,6 +355,7 @@ export function DataProvider({ children: reactChildren }: { children: ReactNode 
         events: state.events,
         todos: state.todos,
         rating: state.rating,
+        tombstones: state.tombstones,
         addChild,
         deleteChild,
         addLetter,

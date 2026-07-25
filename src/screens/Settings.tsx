@@ -48,7 +48,7 @@ export function Settings() {
   const navigate = useNavigate();
   const { t, lang, setLang } = useLanguage();
   const { theme, setTheme } = useTheme();
-  const { children, letters, payments, events, todos, rating, submitRating, restoreBackup } = useData();
+  const { children, letters, payments, events, todos, rating, tombstones, submitRating, restoreBackup } = useData();
 
   const [remindersOn, setRemindersOn] = useState(remindersEnabled());
   const [remindersDenied, setRemindersDenied] = useState(false);
@@ -124,7 +124,7 @@ export function Settings() {
   }
 
   function handleExportBackup() {
-    downloadBackup({ children, letters, payments, events, todos, rating });
+    downloadBackup({ children, letters, payments, events, todos, rating, tombstones });
   }
 
   async function handleBackupFileSelected(e: ChangeEvent<HTMLInputElement>) {

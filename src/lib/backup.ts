@@ -2,7 +2,7 @@
  * (deleting the home-screen app, switching phones) and restore it after —
  * everything lives in localStorage only, so nothing survives that on its
  * own (see DataContext). */
-import type { Child, StoredLetter, Payment, CalendarEvent, TodoItem, AppRating } from '../types/data';
+import type { Child, StoredLetter, Payment, CalendarEvent, TodoItem, AppRating, Tombstone } from '../types/data';
 
 const BACKUP_VERSION = 1;
 
@@ -13,11 +13,39 @@ export interface RestorableState {
   events: CalendarEvent[];
   todos: TodoItem[];
   rating: AppRating | null;
+  tombstones: Tombstone[];
 }
 
 interface BackupPayload extends RestorableState {
   version: number;
   exportedAt: string;
+}
+
+/** Fills in fields that older saved data (localStorage, a JSON export, or a
+ * cloud backup made before a schema addition) won't have — same idea as
+ * `type ?? 'child'` for children, generalized to every field added since. */
+export function normalizeState(raw: Record<string, unknown>): RestorableState {
+  return {
+    children: ((raw.children as (Omit<Child, 'type'> & { type?: Child['type'] })[]) ?? []).map((c) => ({
+      ...c,
+      type: c.type ?? 'child',
+    })),
+    letters: (raw.letters as StoredLetter[]) ?? [],
+    payments: ((raw.payments as (Omit<Payment, 'updatedAt'> & { updatedAt?: string })[]) ?? []).map((p) => ({
+      ...p,
+      updatedAt: p.updatedAt ?? p.createdAt,
+    })),
+    events: ((raw.events as (Omit<CalendarEvent, 'updatedAt'> & { updatedAt?: string })[]) ?? []).map((e) => ({
+      ...e,
+      updatedAt: e.updatedAt ?? e.createdAt,
+    })),
+    todos: ((raw.todos as (Omit<TodoItem, 'updatedAt'> & { updatedAt?: string })[]) ?? []).map((t) => ({
+      ...t,
+      updatedAt: t.updatedAt ?? t.createdAt,
+    })),
+    rating: (raw.rating as AppRating | undefined) ?? null,
+    tombstones: Array.isArray(raw.tombstones) ? (raw.tombstones as Tombstone[]) : [],
+  };
 }
 
 export function downloadBackup(state: RestorableState): void {
@@ -56,12 +84,5 @@ export async function parseBackupFile(file: File): Promise<RestorableState> {
     throw new BackupParseError('backup_error_format');
   }
 
-  return {
-    children: p.children as Child[],
-    letters: p.letters as StoredLetter[],
-    payments: p.payments as Payment[],
-    events: p.events as CalendarEvent[],
-    todos: p.todos as TodoItem[],
-    rating: (p.rating as AppRating | undefined) ?? null,
-  };
+  return normalizeState(p);
 }

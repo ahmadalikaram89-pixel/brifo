@@ -46,6 +46,7 @@ export interface Payment {
   paid: boolean;
   letterId?: string;
   createdAt: string;
+  updatedAt: string;
 }
 
 export type CalendarEventSource = 'letter' | 'payment' | 'manual';
@@ -57,6 +58,7 @@ export interface CalendarEvent {
   date: string;
   source: CalendarEventSource;
   createdAt: string;
+  updatedAt: string;
 }
 
 export interface TodoItem {
@@ -65,6 +67,7 @@ export interface TodoItem {
   title: string;
   done: boolean;
   createdAt: string;
+  updatedAt: string;
   completedAt?: string;
   /** YYYY-MM-DD. Optional — when set, the todo joins the same reminder
    * pipeline (foreground fallback + push) as calendar events. */
@@ -75,4 +78,11 @@ export interface AppRating {
   stars: number;
   comment: string;
   updatedAt: string;
+}
+
+/** Records a deletion so that merging in a stale copy from another device
+ * (see lib/mergeState.ts) removes the item again instead of resurrecting it. */
+export interface Tombstone {
+  id: string;
+  deletedAt: string;
 }
